@@ -217,7 +217,7 @@ Your app will be running at http://localhost:{FRAMEWORKS[framework]['default_por
 
 @click.group()
 def main():
-    """Amen - Laravel-inspired Python web framework scaffolding tool"""
+    """Amen - composer-inspired Python web framework scaffolding tool"""
     pass
 
 @main.command()

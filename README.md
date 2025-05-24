@@ -7,8 +7,8 @@ A composer-inspired Python Web Framework Scaffolding Tool that helps you create 
 - 🔧 Multiple framework support:
   - Flask - Lightweight WSGI framework
   - FastAPI - Modern, fast API framework
-  - Bottle - Simple micro web framework
-  - Pyramid - Flexible web framework
+  - Bottle - Simple micro web framework 🚧
+  - Pyramid - Flexible web framework 🚧
 - 🎨 Project templates for both web apps and APIs
 - 🔄 Automatic virtual environment setup
 - 📦 Dependency management
