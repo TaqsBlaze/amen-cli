@@ -55,13 +55,13 @@ your-app/
 
 ## 🎯 Supported Frameworks
 
-| Framework | Description | Default Port |
-|-----------|-------------|--------------|
-| Flask | Lightweight WSGI web framework | 5000 |
-| Django | High-level Python web framework | 8000 |
-| FastAPI | Modern, fast web framework | 8000 |
-| Bottle | Fast, simple micro framework | 8080 |
-| Pyramid | Flexible web framework | 6543 |
+| Framework | Description | Default Port | Status |
+|-----------|-------------|--------------|--------|
+| Flask | Lightweight WSGI web framework | 5000 | ✅ |
+| Django | High-level Python web framework | 8000 | ❌ |
+| FastAPI | Modern, fast web framework | 8000 | ✅ |
+| Bottle | Fast, simple micro framework | 8080 | ✅ |
+| Pyramid | Flexible web framework | 6543 | ✅ |
 
 ## 🚗 Quick Start
 
