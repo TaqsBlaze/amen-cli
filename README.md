@@ -1,5 +1,4 @@
-# 🚀 AMEN CLI
-
+# 🚀 AMEN CLI   ![icon](https://raw.githubusercontent.com/TaqsBlaze/amen-cli/refs/heads/main/image/icon.png)
 A composer-inspired Python Web Framework Scaffolding Tool that helps you create web applications with ease!
 
 ## ✨ Features
