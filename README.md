@@ -55,11 +55,26 @@ your-app/
 | Framework | Description | Default Port | Status |
 |-----------|-------------|--------------|--------|
 | Flask | Lightweight WSGI web framework | 5000 | ✅ |
-| Django | High-level Python web framework | 8000 | ❌ |
 | FastAPI | Modern, fast web framework | 8000 | ✅ |
-| Bottle | Fast, simple micro framework | 8080 | ✅ |
-| Pyramid | Flexible web framework | 6543 | ✅ |
+| Django | High-level Python web framework | 8000 | ❌ |
+| Bottle | Fast, simple micro framework | 8080 | 🚧 |
+| Pyramid | Flexible web framework | 6543 | 🚧 |
 
+## Work in Progress
+Currently implementing support for additional web frameworks:
+
+- **Bottle**: Integration in development
+- **Pyramid**: Initial implementation phase
+
+These frameworks will enable:
+- Route mapping and handling
+- Request/response processing
+- Middleware integration
+- Template rendering support
+
+Check back for updates or follow the project's issues for implementation progress. Contributions are welcome!
+
+> Note: For now, please use our stable implementations for Flask or FastAPI.
 ## 🚗 Quick Start
 
 ```bash
@@ -88,10 +103,14 @@ python run.py
 # Clone the repository
 git clone https://github.com/taqsblaze/amen-cli.git
 
-# Install for development
+# Install for development and testing
 pip install -e .
+pip install pytest pytest-cov
 
 # Run tests
+pytest
+
+# Run tests with coverage
 pytest
 ```
 

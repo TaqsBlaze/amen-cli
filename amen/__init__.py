@@ -1,3 +1,4 @@
+"""AMEN CLI - Python Web Framework Scaffolding Tool"""
 __version__ = "0.1.0"
 __author__ = "Tanaka Chinengundu"
 
@@ -11,10 +12,7 @@ __python_requires__ = ">=3.7"
 
 SUPPORTED_FRAMEWORKS = {
     "flask": {"version": ">=2.0.0", "port": 5000},
-    "django": {"version": ">=4.0.0", "port": 8000},
-    "fastapi": {"version": ">=0.68.0", "port": 8000},
-    "bottle": {"version": ">=0.12.0", "port": 8080},
-    "pyramid": {"version": ">=2.0.0", "port": 6543}
+    "fastapi": {"version": ">=0.68.0", "port": 8000}
 }
 
 # Package status
@@ -24,4 +22,4 @@ __credits__ = ["Tanaka Chinengundu"]
 
 # Feature flags
 ENABLE_LOGGING = True
-DEBUG_MODE = False
+DEBUG_MODE = True

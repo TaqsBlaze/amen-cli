@@ -15,6 +15,36 @@ from .templates import TemplateManager
 
 console = Console()
 
+VALID_FRAMEWORKS = ['flask', 'fastapi', 'bottle', 'pyramid']
+VALID_PROJECT_TYPES = ['webapp', 'api']
+
+def create_project(path, framework, project_type):
+    """
+    Create a new project with the specified framework and type.
+    
+    Args:
+        path (str): Project directory path
+        framework (str): Web framework to use
+        project_type (str): Type of project (webapp/api)
+    """
+    if framework not in VALID_FRAMEWORKS:
+        raise ValueError(f"Invalid framework. Choose from: {VALID_FRAMEWORKS}")
+    
+    if project_type not in VALID_PROJECT_TYPES:
+        raise ValueError(f"Invalid project type. Choose from: {VALID_PROJECT_TYPES}")
+
+    # Create project directory
+    os.makedirs(path, exist_ok=True)
+    
+    # Create basic structure
+    os.makedirs(os.path.join(path, "app"), exist_ok=True)
+    os.makedirs(os.path.join(path, "app", "templates"), exist_ok=True)
+    os.makedirs(os.path.join(path, "app", "static"), exist_ok=True)
+    
+    # Create empty files
+    open(os.path.join(path, "requirements.txt"), 'a').close()
+    open(os.path.join(path, "README.md"), 'a').close()
+
 class AmenCLI:
     def __init__(self):
         self.template_manager = TemplateManager()
