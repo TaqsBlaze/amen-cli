@@ -22,7 +22,11 @@ class AmenCLI:
     def welcome_banner(self):
         """Display welcome banner"""
         console.print(Panel.fit(
-            "AMEN\\nLaravel-inspired Python Web Framework Scaffolding",
+            """AMEN: Laravel-inspired Python Web Framework Scaffolding
+        Create your web applications with ease!
+        By [bold magenta]Tanaka Chinengundu[/bold magenta]
+        [bold blue]
+            """,
             border_style="magenta"
         ))
         console.print()

@@ -5,6 +5,10 @@ from pathlib import Path
 from ..frameworks import FRAMEWORKS
 
 class TemplateManager:
+    def _write_file(self, path: Path, content: str):
+        """Helper method to write files with UTF-8 encoding"""
+        path.write_text(content, encoding='utf-8')
+
     def generate_structure(self, app_path: Path, framework: str, app_type: str, app_name: str):
         """Generate project structure based on framework and app type"""
         
@@ -23,7 +27,7 @@ class TemplateManager:
         # Add other frameworks as needed
         
         # Generate common files
-        self._generate_common_files(app_path, framework, app_name)
+        self._generate_common_files(app_path, framework, app_name, app_type)
     
     def _generate_flask_files(self, app_path: Path, app_type: str, app_name: str):
         """Generate Flask files"""
@@ -50,10 +54,8 @@ def health():
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)), debug=True)
 """
-        (app_path / "app" / "app.py").write_text(app_content)
-        
-        # Create run.py
-        (app_path / "run.py").write_text("from app.app import app\n\nif __name__ == '__main__':\n    app.run()")
+        self._write_file(app_path / "app" / "app.py", app_content)
+        self._write_file(app_path / "run.py", "from app.app import app\n\nif __name__ == '__main__':\n    app.run()")
         
         if app_type == 'webapp':
             self._generate_html_template(app_path, app_name)
@@ -94,8 +96,8 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
 """
-        (app_path / "app" / "main.py").write_text(main_content)
-        (app_path / "run.py").write_text("import uvicorn\nfrom app.main import app\n\nif __name__ == '__main__':\n    uvicorn.run(app, host='0.0.0.0', port=8000)")
+        self._write_file(app_path / "app" / "main.py", main_content)
+        self._write_file(app_path / "run.py", "import uvicorn\nfrom app.main import app\n\nif __name__ == '__main__':\n    uvicorn.run(app, host='0.0.0.0', port=8000)")
         
         if app_type == 'webapp':
             self._generate_html_template(app_path, app_name)
@@ -118,22 +120,22 @@ if __name__ == "__main__":
     <script src="/static/js/app.js"></script>
 </body>
 </html>"""
-        (app_path / "app" / "templates" / "index.html").write_text(template_content)
+        self._write_file(app_path / "app" / "templates" / "index.html", template_content)
     
-    def _generate_common_files(self, app_path: Path, framework: str, app_name: str):
+    def _generate_common_files(self, app_path: Path, framework: str, app_name: str, app_type: str):
         """Generate common files for all projects"""
         
         # requirements.txt
         framework_info = FRAMEWORKS[framework]
-        requirements = "\\n".join(framework_info['packages'])
-        (app_path / "requirements.txt").write_text(requirements)
+        requirements = "\n".join(framework_info['packages'])
+        self._write_file(app_path / "requirements.txt", requirements)
         
         # .env
         env_content = f"""SECRET_KEY=your-secret-key-here
 DEBUG=True
 PORT={framework_info['default_port']}
 """
-        (app_path / ".env").write_text(env_content)
+        self._write_file(app_path / ".env", env_content)
         
         # README.md
         readme_content = f"""# {app_name}
@@ -220,7 +222,7 @@ from fastapi import FastAPI
 
 @app.get("/new-route")
 async def new_route():
-    return {"message": "Hello from new route!"}
+    return {{"message": "Hello from new route!"}}
 ```
 '''
         elif framework == 'django':
@@ -233,7 +235,7 @@ path('new-route/', views.new_route, name='new_route'),
 2. Add to `app/views.py`:
 ```python
 def new_route(request):
-    return JsonResponse({'message': 'Hello from new route!'})
+    return JsonResponse({{'message': 'Hello from new route!'}})
 ```
 '''
         elif framework == 'bottle':
@@ -241,7 +243,7 @@ def new_route(request):
 ```python
 @app.route('/new-route')
 def new_route():
-    return {'message': 'Hello from new route!'}
+    return {{'message': 'Hello from new route!'}}
 ```
 '''
         elif framework == 'pyramid':
@@ -255,7 +257,7 @@ config.add_route('new_route', '/new-route')
 ```python
 @view_config(route_name='new_route', renderer='json')
 def new_route_view(request):
-    return {'message': 'Hello from new route!'}
+    return {{'message': 'Hello from new route!'}}
 ```
 '''
 
@@ -315,7 +317,7 @@ This project is licensed under the MIT License.
 Happy coding! 🎉
 """
         
-        (app_path / "README.md").write_text(readme_content)
+        self._write_file(app_path / "README.md", readme_content)
         
         # Generate CSS
         css_content = '''/* Reset and Base Styles */
@@ -473,7 +475,7 @@ footer {
 }
 '''
         
-        (app_path / "app" / "static" / "css" / "style.css").write_text(css_content)
+        self._write_file(app_path / "app" / "static" / "css" / "style.css", css_content)
         
         # Generate JavaScript
         js_content = '''// Main application JavaScript
@@ -555,7 +557,7 @@ const utils = {
 // Export for use in other scripts
 window.AppUtils = utils;
 '''
-        (app_path / "app" / "static" / "js" / "app.js").write_text(js_content)
+        self._write_file(app_path / "app" / "static" / "js" / "app.js", js_content)
         
         # Generate test files
         test_content = f'''import pytest
@@ -585,8 +587,8 @@ class Test{app_name.replace('-', '').replace('_', '').title()}:
 # Add more tests as needed
 
         
-        (app_path / "tests" / "__init__.py").write_text("")
-        (app_path / "tests" / f"test_{app_name.replace('-', '_')}.py").write_text(test_content)
+        self._write_file(app_path / "tests" / "__init__.py", "")
+        self._write_file(app_path / "tests" / f"test_{app_name.replace('-', '_')}.py", test_content)
         
         # Generate pytest configuration
         pytest_ini = '''[tool:pytest]
@@ -597,9 +599,9 @@ python_classes = Test*
 addopts = -v --tb=short
 '''
         
-        (app_path / "pytest.ini").write_text(pytest_ini)
+        self._write_file(app_path / "pytest.ini", pytest_ini)
 
-        (app_path / "pytest.ini").write_text(pytest_ini)
+        self._write_file(app_path / "pytest.ini", pytest_ini)
 
 # MANIFEST.in - for including non-Python files in the package
 MANIFEST_IN = '''include README.md
