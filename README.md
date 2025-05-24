@@ -1,6 +1,6 @@
 # 🚀 AMEN CLI
 
-A Laravel-inspired Python Web Framework Scaffolding Tool that helps you create web applications with ease!
+A composer-inspired Python Web Framework Scaffolding Tool that helps you create web applications with ease!
 
 ## ✨ Features
 
@@ -89,7 +89,7 @@ python run.py
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/amen-cli.git
+git clone https://github.com/taqsblaze/amen-cli.git
 
 # Install for development
 pip install -e .

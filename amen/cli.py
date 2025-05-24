@@ -22,7 +22,7 @@ class AmenCLI:
     def welcome_banner(self):
         """Display welcome banner"""
         console.print(Panel.fit(
-            """AMEN: Laravel-inspired Python Web Framework Scaffolding
+            """AMEN: composer-inspired Python Web Framework Scaffolding
         Create your web applications with ease!
         By [bold magenta]Tanaka Chinengundu[/bold magenta]
         [bold blue]

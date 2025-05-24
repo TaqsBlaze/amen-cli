@@ -262,9 +262,9 @@ config.add_route('new_route', '/new-route')
 def new_route_view(request):
     return {{'message': 'Hello from new route!'}}
 ```
-'''
+"""
 
-        readme_content += f'''
+        readme_content += f"""
 
 ## 🧪 Testing
 
@@ -323,7 +323,7 @@ Happy coding! 🎉
         self._write_file(app_path / "README.md", readme_content)
         
         # Generate CSS
-        css_content = '''/* Reset and Base Styles */
+        css_content = """/* Reset and Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -476,12 +476,12 @@ footer {
 .feature:nth-child(3) {
     animation-delay: 0.2s;
 }
-'''
+"""
         
         self._write_file(app_path / "app" / "static" / "css" / "style.css", css_content)
         
         # Generate JavaScript
-        js_content = '''// Main application JavaScript
+        js_content = """// Main application JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Application loaded successfully!');
     
@@ -559,11 +559,11 @@ const utils = {
 
 // Export for use in other scripts
 window.AppUtils = utils;
-'''
+"""
         self._write_file(app_path / "app" / "static" / "js" / "app.js", js_content)
         
         # Generate test files
-        test_content = f'''import pytest
+        test_content = f"""import pytest
 import sys
 import os
 
@@ -571,22 +571,22 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'app'))
 
 def test_basic_functionality():
-    """Test basic functionality"""
+    '''Test basic functionality'''
     assert True  # Replace with actual tests
 
 class Test{app_name.replace('-', '').replace('_', '').title()}:
-    """Test class for {app_name}"""
+    '''Test class for {app_name}'''
     
     def test_app_creation(self):
-        """Test application creation"""
+        '''Test application creation'''
         # Add your app-specific tests here
         pass
     
     def test_health_endpoint(self):
-        """Test health endpoint"""
+        '''Test health endpoint'''
         # Add health endpoint test
         pass
-'''
+"""
 # Add more tests as needed
 
         
@@ -594,22 +594,24 @@ class Test{app_name.replace('-', '').replace('_', '').title()}:
         self._write_file(app_path / "tests" / f"test_{app_name.replace('-', '_')}.py", test_content)
         
         # Generate pytest configuration
-        pytest_ini = '''[tool:pytest]
+        pytest_ini = """
+[tool:pytest]
 testpaths = tests
 python_files = test_*.py
 python_functions = test_*
 python_classes = Test*
 addopts = -v --tb=short
-'''
+"""
         
         self._write_file(app_path / "pytest.ini", pytest_ini)
 
         self._write_file(app_path / "pytest.ini", pytest_ini)
 
 # MANIFEST.in - for including non-Python files in the package
-MANIFEST_IN = '''include README.md
+MANIFEST_IN = """
+include README.md
 include LICENSE
 recursive-include amen/templates *.py *.html *.css *.js *.md
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
-'''
+"""
