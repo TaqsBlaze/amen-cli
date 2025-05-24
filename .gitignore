@@ -16,12 +16,15 @@ sdist/
 var/
 wheels/
 *.egg-info/
+.pytest_cache/
 .installed.cfg
 *.egg
 venv/
 env/
 ENV/
 .env
+.coverage
+.coverage.*
 .vscode/
 .idea/
 *.swp
