@@ -7,17 +7,20 @@ from ..frameworks import FRAMEWORKS
 class TemplateManager:
     def _write_file(self, path: Path, content: str):
         """Helper method to write files with UTF-8 encoding"""
+        # Ensure parent directory exists
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding='utf-8')
 
     def generate_structure(self, app_path: Path, framework: str, app_type: str, app_name: str):
         """Generate project structure based on framework and app type"""
         
-        # Create basic directories
+        # Create all necessary directories
         (app_path / "app").mkdir(exist_ok=True)
         (app_path / "app" / "templates").mkdir(exist_ok=True)
         (app_path / "app" / "static").mkdir(exist_ok=True)
         (app_path / "app" / "static" / "css").mkdir(exist_ok=True)
         (app_path / "app" / "static" / "js").mkdir(exist_ok=True)
+        (app_path / "tests").mkdir(exist_ok=True)  # Create tests directory
         
         # Generate framework-specific files
         if framework == 'flask':
