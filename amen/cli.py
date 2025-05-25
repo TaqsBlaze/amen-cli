@@ -6,6 +6,7 @@ from pathlib import Path
 
 import click
 import questionary
+import requests  # Add this import for HTTP requests
 from rich.console import Console
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
@@ -353,6 +354,46 @@ def test(app_name):
         console.print(f"❌ Tests failed: {e}", style="red")
     except FileNotFoundError as e:
         console.print(f"❌ Error: {e}. Make sure pytest is installed in the virtual environment.", style="red")
+
+@main.command()
+def check_update():
+    """Check for a new version on PyPI and upgrade the package."""
+    package_name = "amen-cli"  # Replace with the actual package name on PyPI
+    console.print(f"🔍 Checking for updates for '{package_name}'...", style="blue")
+
+    try:
+        # Fetch the latest version from PyPI
+        response = requests.get(f"https://pypi.org/pypi/{package_name}/json", timeout=10)
+        response.raise_for_status()
+        latest_version = response.json()["info"]["version"]
+
+        # Get the current installed version
+        current_version = subprocess.run(
+            [sys.executable, "-m", "pip", "show", package_name],
+            capture_output=True,
+            text=True,
+        ).stdout.split("Version: ")[1].splitlines()[0]
+
+        if current_version == latest_version:
+            console.print(f"✅ You are already using the latest version ({current_version}).", style="green")
+        else:
+            console.print(f"⬆️ New version available: {latest_version} (current: {current_version}).", style="yellow")
+            update = questionary.confirm("Do you want to update to the latest version?").ask()
+            if update:
+                # Run pip install to upgrade the package
+                subprocess.run(
+                    [sys.executable, "-m", "pip", "install", "--upgrade", f"{package_name}=={latest_version}"],
+                    check=True,
+                )
+                console.print(f"✅ Successfully updated to version {latest_version}.", style="green")
+            else:
+                console.print("❌ Update cancelled.", style="red")
+    except requests.RequestException as e:
+        console.print(f"❌ Failed to fetch version information: {e}", style="red")
+    except subprocess.CalledProcessError as e:
+        console.print(f"❌ Failed to update the package: {e}", style="red")
+    except Exception as e:
+        console.print(f"❌ An unexpected error occurred: {e}", style="red")
 
 if __name__ == "__main__":
     main()
