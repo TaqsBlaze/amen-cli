@@ -26,6 +26,16 @@ pip install amen-cli
 # Create a new project
 amen create
 
+# You can also use flags to specify the framework, type, and name:
+amen create -f flask -t webapp -n myapp
+
+# Available options:
+# -f, --framework   Framework to use (flask, fastapi, bottle, pyramid)
+# -t, --type        Type of application (webapp, api)
+# -n, --name        Name of the application
+
+# If flags are not provided, the interactive prompts will be used.
+
 # Follow the interactive prompts to:
 # 1. Select a framework
 # 2. Choose application type (webapp/api)
