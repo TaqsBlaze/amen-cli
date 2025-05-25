@@ -6,7 +6,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="amen-cli",
-    version="0.1.0",
+    version="0.2.0",
     author="Tanaka Chinengundu",
     author_email="tanakah30@gmail.com",
     description="composer-inspired Python web framework scaffolding tool",

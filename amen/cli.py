@@ -221,9 +221,36 @@ def main():
     pass
 
 @main.command()
-def create():
+@click.option(
+    "--framework", "-f",
+    type=click.Choice(list(FRAMEWORKS.keys()), case_sensitive=False),
+    help="Framework to use for the new project (e.g., flask, fastapi)"
+)
+@click.option(
+    "--type", "-t",
+    type=click.Choice(['webapp', 'api'], case_sensitive=False),
+    help="Type of application to create (webapp or api)"
+)
+@click.option(
+    "--name", "-n",
+    type=str,
+    help="Name of the application"
+)
+def create(framework, type, name):
     """Create a new web application"""
     cli = AmenCLI()
+    # If framework is provided, override the interactive prompt
+    if framework:
+        original_select_framework = cli.select_framework
+        cli.select_framework = lambda: framework.lower()
+    # If type is provided, override the interactive prompt
+    if type:
+        original_select_app_type = cli.select_app_type
+        cli.select_app_type = lambda: type.lower()
+    # If name is provided, override the interactive prompt
+    if name:
+        original_get_app_name = cli.get_app_name
+        cli.get_app_name = lambda: name
     cli.create_app()
 
 if __name__ == "__main__":
