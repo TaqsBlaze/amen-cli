@@ -15,6 +15,9 @@ from .templates import TemplateManager
 
 console = Console()
 
+class PipNetworkError(Exception):
+    pass
+
 VALID_FRAMEWORKS = ['flask', 'fastapi', 'bottle', 'pyramid']
 VALID_PROJECT_TYPES = ['webapp', 'api']
 
@@ -200,14 +203,18 @@ class AmenCLI:
             self.template_manager.generate_structure(app_path, framework, app_type, app_name)
             progress.update(task, description="✅ Project structure generated")
 
+        # Create .amen_config file
+        with open(app_path / ".amen_config", "w") as f:
+            f.write(framework + "\n")  # Write the framework name
+
         # Success message
         console.print(Panel(
             f"""🎉 Successfully created '{app_name}'!
 
 📁 Next Steps:
    1. cd {app_name}
-   2. source venv/bin/activate  (Linux/Mac) or venv\\Scripts\\activate (Windows)  
-   3. python run.py
+   2. source venv/bin/activate  (Linux/Mac) or venv\\Scripts\\activate (Windows)
+   3. amen run {app_name}
 
 Your app will be running at http://localhost:{FRAMEWORKS[framework]['default_port']}
             """.strip(),
@@ -252,6 +259,64 @@ def create(framework, type, name):
         original_get_app_name = cli.get_app_name
         cli.get_app_name = lambda: name
     cli.create_app()
+
+@main.command()
+@click.argument("app_name", type=str)
+def run(app_name):
+    """Runs the development server for a created application."""
+    app_path = str(f"{Path.cwd()}\\" + app_name)
+
+    print("App path", app_path)
+    if not Path(app_path).exists() or not Path(app_path).is_dir():
+        console.print(f"❌ Application '{app_name}' not found.", style="red")
+        return
+
+    venv_path = Path(app_path) / "venv"
+    if not venv_path.exists() or not venv_path.is_dir():
+        console.print(f"❌ Virtual environment not found for '{app_name}'.", style="red")
+        console.print("   Please create the application using `amen create` first.", style="yellow")
+        return
+
+    # Determine activate script path based on OS
+    if sys.platform == "win32":
+        activate_script = venv_path / "Scripts" / "activate"
+    else:
+        activate_script = venv_path / "bin" / "activate"
+
+    # Find the framework used by the application (read from a config file or similar)
+    config_file = Path(app_path) / ".amen_config"
+    if not config_file.exists():
+        console.print(f"❌ Configuration file '.amen_config' not found in '{app_name}'.", style="red")
+        console.print("   Please ensure the application was created with `amen create`.", style="yellow")
+        return
+
+    with open(config_file, "r") as f:
+        framework = f.readline().strip()  # Read the framework from the first line
+
+    if framework not in FRAMEWORKS:
+        console.print(f"❌ Unsupported framework '{framework}' in '.amen_config'.", style="red")
+        return
+
+    entry_file = "run.py" #FRAMEWORKS[framework]['entry_file']
+    default_port = FRAMEWORKS[framework]['default_port']
+
+    # Construct the run command
+    if sys.platform == "win32":
+        run_command = f"\"{venv_path / 'Scripts' / 'python'}\" \"{str(Path(app_path) / entry_file)}\""
+    else:
+        run_command = f"\"{venv_path / 'bin' / 'python'}\" \"{Path(app_path) / entry_file}\""
+
+    try:
+        console.print(f"🚀 Starting '{app_name}' using {framework}...", style="green")
+        # Run the application
+        env = os.environ.copy()  # Copy existing environment variables
+        env["PYTHONPATH"] = str(Path(app_path))  # Add app path to PYTHONPATH
+        process = subprocess.Popen(run_command, shell=True, cwd=str(Path(app_path)), env=env)
+        process.wait()  # Wait for the process to finish
+    except subprocess.CalledProcessError as e:
+        console.print(f"❌ Error running the application: {e}", style="red")
+    except FileNotFoundError as e:
+        console.print(f"❌ Error: {e}.  Make sure {entry_file} exists.", style="red")
 
 if __name__ == "__main__":
     main()

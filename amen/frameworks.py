@@ -18,7 +18,7 @@ FRAMEWORKS = {
     'fastapi': {
         'name': 'FastAPI',
         'description': 'Modern, fast web framework for building APIs',
-        'packages': ['fastapi', 'uvicorn[standard]', 'python-dotenv'],
+        'packages': ['fastapi', 'uvicorn[standard]', 'python-dotenv','jinja2'],
         'default_port': 8000,
         'entry_file': 'main.py',
     },
