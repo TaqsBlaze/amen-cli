@@ -13,6 +13,9 @@ A laravel installer inspired Python Web Application Scaffolding Tool that helps 
 - 🔄 Automatic virtual environment setup
 - 📦 Dependency management
 - 🏗️ Structured project scaffolding
+- 🧪 Test scaffolding with pytest
+- 🔄 Update checker for the CLI
+- 🚀 Command to run your application
 
 ## 🛠️ Installation
 
@@ -42,6 +45,25 @@ amen create -f flask -t webapp -n myapp
 # 3. Name your project
 ```
 
+### Additional Commands
+
+```bash
+# Run your application
+amen run <app_name>
+
+# Example:
+amen run myapp
+
+# Run tests for your application
+amen test <app_name>
+
+# Example:
+amen test myapp
+
+# Check for updates to the CLI
+amen check-update
+```
+
 ## 🌟 Project Structure
 
 When you create a project, AMEN generates:
@@ -64,11 +86,11 @@ your-app/
 
 | Framework | Description | Default Port | Status |
 |-----------|-------------|--------------|--------|
-| Flask | Lightweight WSGI web framework | 5000 | ✅ |
-| FastAPI | Modern, fast web framework | 8000 | ✅ |
-| Django | High-level Python web framework | 8000 | ❌ |
-| Bottle | Fast, simple micro framework | 8080 | 🚧 |
-| Pyramid | Flexible web framework | 6543 | 🚧 |
+| Flask     | Lightweight WSGI web framework | 5000 | ✅ |
+| FastAPI   | Modern, fast web framework      | 8000 | ✅ |
+| Django    | High-level Python web framework | 8000 | ❌ |
+| Bottle    | Fast, simple micro framework    | 8080 | 🚧 |
+| Pyramid   | Flexible web framework          | 6543 | 🚧 |
 
 ## Work in Progress
 Currently implementing support for additional web frameworks:
@@ -85,6 +107,7 @@ These frameworks will enable:
 Check back for updates or follow the project's issues for implementation progress. Contributions are welcome!
 
 > Note: For now, please use our stable implementations for Flask or FastAPI.
+
 ## 🚗 Quick Start
 
 ```bash
@@ -121,7 +144,7 @@ pip install pytest pytest-cov
 pytest
 
 # Run tests with coverage
-pytest
+pytest --cov
 ```
 
 ## 🤝 Contributing

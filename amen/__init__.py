@@ -1,5 +1,5 @@
 """AMEN CLI - Python Web Framework Scaffolding Tool"""
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 __author__ = "Tanaka Chinengundu"
 
 __description__ = "A inspired by the laravel installer. Python Web Framework Scaffolding Tool"
