@@ -10,6 +10,7 @@ A laravel installer inspired Python Web Application Scaffolding Tool that helps 
   - Bottle - Simple micro web framework 🚧
   - Pyramid - Flexible web framework 🚧
 - 🎨 Project templates for both web apps and APIs
+- 🏗️ **Modular project structure** (see below)
 - 🔄 Automatic virtual environment setup
 - 📦 Dependency management
 - 🏗️ Structured project scaffolding
@@ -72,21 +73,35 @@ amen config myapp
 
 ## 🌟 Project Structure
 
-When you create a project, AMEN generates:
+When you create a project, AMEN now generates a **modular structure**:
 
 ```
 your-app/
 ├── venv/                   # Virtual environment
-├── app/                    # Main application code
-│   ├── templates/         # HTML templates (webapp)
-│   └── static/           # Static files
-│       ├── css/         # Stylesheets
-│       └── js/          # JavaScript files
-├── tests/                 # Test directory
-├── requirements.txt       # Python dependencies
-├── .env                  # Environment variables
-└── README.md             # Project documentation
+├── your-app/               # Main application package
+│   ├── api/                # API endpoints (endpoints.py)
+│   ├── auth/               # Authentication (token.py, etc.)
+│   ├── models/             # Models module
+│   ├── static/             # Static files (CSS, JS, images)
+│   │   ├── uploads/
+│   │   ├── css/
+│   │   └── js/
+│   ├── templates/          # HTML templates (if webapp)
+│   └── app.py / main.py    # Main application file (Flask: app.py, FastAPI: main.py)
+├── tests/                  # Test files
+├── docs/                   # Documentation
+├── requirements.txt        # Python dependencies
+├── .env                    # Environment variables (local)
+├── .env.example            # Environment variables template
+├── .gitignore              # Git ignore rules
+├── run.py                  # Application runner
+└── README.md               # This file
 ```
+
+- **Flask**: Uses `app.py` and registers a blueprint from `api/endpoints.py`. Token authentication is in `auth/token.py`.
+- **FastAPI**: Uses `main.py` and includes a router from `api/endpoints.py`. Token authentication is in `auth/token.py`.
+- **Webapp**: Includes HTML templates and static files. FastAPI mounts static and template directories.
+- **API**: Generates only API endpoints and disables template/static mounting.
 
 ## 🎯 Supported Frameworks
 
@@ -134,6 +149,9 @@ venv\Scripts\activate     # Windows
 
 # Run your application
 python run.py
+Or
+#Before you cd into your project you can run the following 
+amen run <appname>
 ```
 
 ## 🔧 Development

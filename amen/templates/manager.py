@@ -66,8 +66,6 @@ if __name__ == '__main__':
     
     def _generate_fastapi_files(self, app_path: Path, app_type: str, app_name: str):
         """Generate FastAPI files"""
-        static_mount = f"app.mount('/static', StaticFiles(directory='{app_name}/static'), name='static')" if app_type == 'webapp' else ""
-        templates_init = f"templates = Jinja2Templates(directory='{app_name}/templates')" if app_type == 'webapp' else ""
         main_content = f"""from fastapi import FastAPI
 from {app_name}.api.endpoints import api_router
 from fastapi.middleware.cors import CORSMiddleware
@@ -88,8 +86,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-{static_mount}
-{templates_init}
+{"app.mount('/static', StaticFiles(directory='{app_name}/static'), name='static')" if app_type == 'webapp' else ""}
+{"templates = Jinja2Templates(directory='{app_name}/templates')" if app_type == 'webapp' else ""}
 
 app.include_router(api_router)
 
@@ -681,37 +679,16 @@ def protected(current_user):
     return jsonify({{'message': 'This is a protected route!', 'user': current_user}})
 """
         elif framework == 'fastapi':
-            if app_type == 'webapp':
-                endpoints_content = f"""from fastapi import APIRouter, Request
-from fastapi.templating import Jinja2Templates
-from {app_name}.auth.token import token_required
-from fastapi import Depends, HTTPException, status
-
-templates = Jinja2Templates(directory="{app_name}/templates")
-api_router = APIRouter()
-
-@api_router.get("/")
-async def root(request: Request):
-    return templates.TemplateResponse('index.html', {{'request': request, 'title': '{app_name}'}})
-
-@api_router.get("/health")
-async def health():
-    return {{"status": "healthy", "service": "{app_name}"}}
-
-@api_router.get("/protected")
-async def protected(current_user: dict = Depends(token_required)):
-    return {{"message": "This is a protected route!", "user": current_user}}
-"""
-            else:
-                endpoints_content = f"""from fastapi import APIRouter
+            endpoints_content = f"""from fastapi import APIRouter, Request
+{"from fastapi.templating import Jinja2Templates" if app_type == 'webapp' else ""}
 from {app_name}.auth.token import token_required
 from fastapi import Depends, HTTPException, status
 
 api_router = APIRouter()
 
 @api_router.get("/")
-async def root():
-    return {{"message": "Welcome to {app_name} API!"}}
+async def root({"request: Request" if app_type == 'webapp' else ""}):
+    {"return templates.TemplateResponse('index.html', {'request': request, 'title': '" + app_name + "'})" if app_type == 'webapp' else 'return {"message": "Welcome to ' + app_name + ' API!"}'}
 
 @api_router.get("/health")
 async def health():
