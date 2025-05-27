@@ -7,40 +7,84 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" href="https://raw.githubusercontent.com/TaqsBlaze/amen-cli/refs/heads/main/image/icon.png">
+  <style>
+    /* Custom slow spin animation using Tailwind's keyframes */
+    @layer utilities {
+      .animate-spin-slow {
+        animation: spin 4s linear infinite;
+      }
+      .animate-fade-in {
+        animation: fadeIn 1.2s ease-in;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(30px);}
+        to { opacity: 1; transform: translateY(0);}
+      }
+      .animate-slide-up {
+        animation: slideUp 1s cubic-bezier(0.4,0,0.2,1);
+      }
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(40px);}
+        to { opacity: 1; transform: translateY(0);}
+      }
+    }
+    /* Fixed background overlay for parallax effect */
+    .bg-fixed-overlay {
+      background-image: url('https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.13;
+      z-index: 0;
+    }
+    .section-overlay {
+      background: rgba(255,255,255,0.85);
+      border-radius: 1.5rem;
+      box-shadow: 0 6px 32px 0 rgba(80, 80, 180, 0.08);
+      z-index: 1;
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-100 via-white to-purple-100 min-h-screen text-gray-800">
-  <header class="bg-gradient-to-r from-indigo-600 to-purple-600 py-8 shadow-lg">
+<body class="bg-gradient-to-br from-indigo-100 via-white to-purple-100 min-h-screen text-gray-800 relative">
+  <!-- Fixed background image overlay -->
+  <div class="fixed inset-0 bg-fixed-overlay pointer-events-none"></div>
+  <header class="bg-gradient-to-r from-indigo-600 to-purple-600 py-8 shadow-lg relative z-10 animate-fade-in">
     <div class="container mx-auto flex flex-col items-center">
-      <img src="https://raw.githubusercontent.com/TaqsBlaze/amen-cli/refs/heads/main/image/icon.png" alt="AMEN CLI" class="w-16 h-16 mb-2">
-      <h1 class="text-4xl font-extrabold text-white tracking-tight mb-2">AMEN CLI Wiki</h1>
-      <p class="text-indigo-100 text-lg">A Laravel-inspired Python Web Application Scaffolding Tool</p>
+      <img
+        style="border-radius: 100%;"
+        src="https://raw.githubusercontent.com/TaqsBlaze/amen-cli/refs/heads/main/image/icon.png"
+        alt="AMEN CLI"
+        class="w-16 h-16 mb-2 transition-transform duration-700 hover:scale-110 hover:rotate-12 animate-spin-slow"
+      >
+      <h1 class="text-4xl font-extrabold text-white tracking-tight mb-2 transition-transform duration-500 hover:scale-105">AMEN CLI Wiki</h1>
+      <div class="text-center text-4xl text-white"> <b>v 0.4.0</b></div>
+      <p class="text-lg text-white">A Laravel-inspired Python Web Application Scaffolding Tool</p>
     </div>
   </header>
 
-  <main class="container mx-auto px-4 py-10">
-    <section class="mb-10">
-      <h2 class="text-2xl font-bold text-indigo-700 mb-4">✨ Features</h2>
+  <main class="container mx-auto px-4 py-10 relative z-10">
+    <section class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-indigo-700 mb-4 transition-colors duration-300 hover:text-indigo-900">✨ Features</h2>
       <ul class="list-disc list-inside space-y-1 text-lg">
-        <li>Interactive project setup wizard</li>
-        <li>Multiple framework support: Flask, FastAPI, Bottle (WIP), Pyramid (WIP)</li>
-        <li>Modular project structure</li>
-        <li>Webapp and API templates</li>
-        <li>Automatic virtual environment setup</li>
-        <li>Dependency management</li>
-        <li>Test scaffolding with pytest</li>
-        <li>Update checker for the CLI</li>
-        <li>Easy project runner</li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Interactive project setup wizard</li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Multiple framework support: Flask, FastAPI, Bottle (WIP), Pyramid (WIP)</li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Modular project structure</li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Webapp and API templates</li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Automatic virtual environment setup</li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Dependency management</li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Test scaffolding with pytest</li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Update checker for the CLI</li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Easy project runner</li>
       </ul>
     </section>
 
-    <section class="mb-10">
-      <h2 class="text-2xl font-bold text-purple-700 mb-4">🛠️ Installation</h2>
-      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto"><code>pip install amen-cli</code></pre>
+    <section class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-purple-700 mb-4 transition-colors duration-300 hover:text-purple-900">🛠️ Installation</h2>
+      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>pip install amen-cli</code></pre>
     </section>
 
-    <section class="mb-10">
-      <h2 class="text-2xl font-bold text-pink-700 mb-4">🚀 Quick Start</h2>
-      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto"><code># Create a new project
+    <section class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-pink-700 mb-4 transition-colors duration-300 hover:text-pink-900">🚀 Quick Start</h2>
+      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Create a new project
 amen create
 
 # Or use flags for automation:
@@ -56,7 +100,7 @@ amen create -f flask -t webapp -n myapp
       </div>
       <div class="mt-4">
         <span class="font-semibold text-gray-700">Run your app:</span>
-        <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto"><code>cd myapp
+        <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>cd myapp
 source venv/bin/activate  # Linux/Mac
 venv\Scripts\activate     # Windows
 python run.py
@@ -66,9 +110,9 @@ amen run myapp
       </div>
     </section>
 
-    <section class="mb-10">
-      <h2 class="text-2xl font-bold text-blue-700 mb-4">🏗️ Project Structure</h2>
-      <pre class="bg-gray-900 text-blue-200 rounded p-4 overflow-x-auto"><code>your-app/
+    <section class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-blue-700 mb-4 transition-colors duration-300 hover:text-blue-900">🏗️ Project Structure</h2>
+      <pre class="bg-gray-900 text-blue-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>your-app/
 ├── venv/                   # Virtual environment
 ├── your-app/               # Main application package
 │   ├── api/                # API endpoints (endpoints.py)
@@ -91,10 +135,10 @@ amen run myapp
 </code></pre>
     </section>
 
-    <section class="mb-10">
-      <h2 class="text-2xl font-bold text-teal-700 mb-4">🎯 Framework Support</h2>
+    <section class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-teal-700 mb-4 transition-colors duration-300 hover:text-teal-900">🎯 Framework Support</h2>
       <div class="overflow-x-auto">
-        <table class="min-w-full bg-white rounded shadow">
+        <table class="min-w-full bg-white rounded shadow transition-shadow duration-300 hover:shadow-xl">
           <thead>
             <tr>
               <th class="px-4 py-2 border-b-2 border-indigo-200 text-left">Framework</th>
@@ -104,31 +148,31 @@ amen run myapp
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr class="transition-colors duration-300 hover:bg-indigo-50">
               <td class="px-4 py-2">Flask</td>
               <td class="px-4 py-2">Lightweight WSGI web framework</td>
               <td class="px-4 py-2">5000</td>
               <td class="px-4 py-2 text-green-600 font-bold">✅</td>
             </tr>
-            <tr>
+            <tr class="transition-colors duration-300 hover:bg-indigo-50">
               <td class="px-4 py-2">FastAPI</td>
               <td class="px-4 py-2">Modern, fast web framework</td>
               <td class="px-4 py-2">8000</td>
               <td class="px-4 py-2 text-green-600 font-bold">✅</td>
             </tr>
-            <tr>
+            <tr class="transition-colors duration-300 hover:bg-indigo-50">
               <td class="px-4 py-2">Django</td>
               <td class="px-4 py-2">High-level Python web framework</td>
               <td class="px-4 py-2">8000</td>
               <td class="px-4 py-2 text-red-500 font-bold">❌</td>
             </tr>
-            <tr>
+            <tr class="transition-colors duration-300 hover:bg-indigo-50">
               <td class="px-4 py-2">Bottle</td>
               <td class="px-4 py-2">Fast, simple micro framework</td>
               <td class="px-4 py-2">8080</td>
               <td class="px-4 py-2 text-yellow-500 font-bold">🚧</td>
             </tr>
-            <tr>
+            <tr class="transition-colors duration-300 hover:bg-indigo-50">
               <td class="px-4 py-2">Pyramid</td>
               <td class="px-4 py-2">Flexible web framework</td>
               <td class="px-4 py-2">6543</td>
@@ -139,9 +183,9 @@ amen run myapp
       </div>
     </section>
 
-    <section class="mb-10">
-      <h2 class="text-2xl font-bold text-orange-700 mb-4">📖 Usage</h2>
-      <pre class="bg-gray-900 text-orange-200 rounded p-4 overflow-x-auto"><code># Create a new project
+    <section class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-orange-700 mb-4 transition-colors duration-300 hover:text-orange-900">📖 Usage</h2>
+      <pre class="bg-gray-900 text-orange-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Create a new project
 amen create
 
 # Run your application
@@ -158,9 +202,9 @@ amen config &lt;app_name&gt;
 </code></pre>
     </section>
 
-    <section class="mb-10">
-      <h2 class="text-2xl font-bold text-green-700 mb-4">🔧 Development</h2>
-      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto"><code>git clone https://github.com/taqsblaze/amen-cli.git
+    <section class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-green-700 mb-4 transition-colors duration-300 hover:text-green-900">🔧 Development</h2>
+      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>git clone https://github.com/taqsblaze/amen-cli.git
 pip install -e .
 pip install pytest pytest-cov
 pytest
@@ -168,36 +212,36 @@ pytest --cov
 </code></pre>
     </section>
 
-    <section class="mb-10">
-      <h2 class="text-2xl font-bold text-indigo-700 mb-4">🤝 Contributing</h2>
+    <section class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-indigo-700 mb-4 transition-colors duration-300 hover:text-indigo-900">🤝 Contributing</h2>
       <ol class="list-decimal list-inside ml-4 text-lg">
-        <li>Fork the repository</li>
-        <li>Create your feature branch: <code>git checkout -b feature/amazing-feature</code></li>
-        <li>Make your changes</li>
-        <li>Push to the branch: <code>git push origin feature/amazing-feature</code></li>
-        <li>Open a Pull Request</li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Fork the repository</li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Create your feature branch: <code>git checkout -b feature/amazing-feature</code></li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Make your changes</li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Push to the branch: <code>git push origin feature/amazing-feature</code></li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Open a Pull Request</li>
       </ol>
     </section>
 
-    <section class="mb-10">
-      <h2 class="text-2xl font-bold text-pink-700 mb-4">👥 Contact & Support</h2>
+    <section class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-pink-700 mb-4 transition-colors duration-300 hover:text-pink-900">👥 Contact & Support</h2>
       <ul class="list-disc list-inside ml-4 text-lg">
-        <li>🌐 <a href="https://github.com/taqsblaze/amen-cli" class="text-indigo-600 hover:underline">GitHub Repository</a></li>
-        <li>🐛 <a href="https://github.com/taqsblaze/amen-cli/issues" class="text-indigo-600 hover:underline">Issue Tracker</a></li>
-        <li>📧 <a href="mailto:tanakah30@gmail.com" class="text-indigo-600 hover:underline">Send Email</a></li>
+        <li>🌐 <a href="https://github.com/taqsblaze/amen-cli" class="text-indigo-600 hover:underline hover:text-indigo-900 transition-colors duration-300">GitHub Repository</a></li>
+        <li>🐛 <a href="https://github.com/taqsblaze/amen-cli/issues" class="text-indigo-600 hover:underline hover:text-indigo-900 transition-colors duration-300">Issue Tracker</a></li>
+        <li>📧 <a href="mailto:tanakah30@gmail.com" class="text-indigo-600 hover:underline hover:text-indigo-900 transition-colors duration-300">Send Email</a></li>
       </ul>
     </section>
 
-    <section class="mb-10">
-      <h2 class="text-2xl font-bold text-blue-700 mb-4">⭐ Credits</h2>
+    <section class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-blue-700 mb-4 transition-colors duration-300 hover:text-blue-900">⭐ Credits</h2>
       <p class="text-lg">
-        Created by <a href="https://www.linkedin.com/in/taqsblaze" class="text-indigo-600 hover:underline">Tanaka Chinengundu</a><br>
+        Created by <a href="https://www.linkedin.com/in/taqsblaze" class="text-indigo-600 hover:underline hover:text-indigo-900 transition-colors duration-300">Tanaka Chinengundu</a><br>
         Inspired by Laravel's elegant development experience
       </p>
     </section>
   </main>
 
-  <footer class="bg-gradient-to-r from-indigo-600 to-purple-600 py-6 mt-10">
+  <footer class="bg-gradient-to-r from-indigo-600 to-purple-600 py-6 mt-10 relative z-10">
     <div class="container mx-auto text-center text-white text-lg font-semibold">
       Made with <span class="text-pink-400">❤️</span> by Tanaka Chinengundu
     </div>
