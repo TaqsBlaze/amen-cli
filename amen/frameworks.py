@@ -4,7 +4,7 @@ FRAMEWORKS = {
     'flask': {
         'name': 'Flask',
         'description': 'Lightweight WSGI web application framework',
-        'packages': ['flask', 'flask-cors', 'python-dotenv','pytest','pytest-cov'],
+        'packages': ['flask', 'flask-cors', 'python-dotenv','pytest','pytest-cov','pyjwt','flask-sqlalchemy','sqlalchemy','pymysql'],
         'default_port': 5000,
         'entry_file': 'app.py',
     },
@@ -18,7 +18,7 @@ FRAMEWORKS = {
     'fastapi': {
         'name': 'FastAPI',
         'description': 'Modern, fast web framework for building APIs',
-        'packages': ['fastapi', 'uvicorn[standard]', 'python-dotenv','jinja2','pytest','pytest-cov'],
+        'packages': ['fastapi', 'uvicorn[standard]', 'python-dotenv','jinja2','pytest','pytest-cov','pyjwt', 'sqlalchemy', 'pymysql'],
         'default_port': 8000,
         'entry_file': 'main.py',
     },

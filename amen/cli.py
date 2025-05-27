@@ -13,6 +13,8 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 
 from .frameworks import FRAMEWORKS
 from .templates import TemplateManager
+from .editor import edit_file
+from .auth import scaffold_auth  # Import the new function
 
 console = Console()
 
@@ -208,7 +210,6 @@ class AmenCLI:
         with open(app_path / ".amen_config", "w") as f:
             f.write(framework + "\n")  
 
-        # Success message
         console.print(Panel(
             f"""🎉 Successfully created '{app_name}'!
 
@@ -216,7 +217,7 @@ class AmenCLI:
    1. cd {app_name}
    2. source venv/bin/activate  (Linux/Mac) or venv\\Scripts\\activate (Windows)
    3. amen run {app_name}
-
+   
 Your app will be running at http://localhost:{FRAMEWORKS[framework]['default_port']}
             """.strip(),
             title="🎊 Project Created Successfully!",
@@ -278,7 +279,6 @@ def run(app_name):
         console.print("   Please create the application using `amen create` first.", style="yellow")
         return
 
-    # Determine activate script path based on OS
     if sys.platform == "win32":
         activate_script = venv_path / "Scripts" / "activate"
     else:
@@ -309,7 +309,6 @@ def run(app_name):
 
     try:
         console.print(f"🚀 Starting '{app_name}' using {framework}...", style="green")
-        # Run the application
         env = os.environ.copy()  # Copy existing environment variables
         env["PYTHONPATH"] = str(Path(app_path))  # Add app path to PYTHONPATH
         process = subprocess.Popen(run_command, shell=True, cwd=str(Path(app_path)), env=env)
@@ -358,16 +357,14 @@ def test(app_name):
 @main.command()
 def check_update():
     """Check for a new version on PyPI and upgrade the package."""
-    package_name = "amen-cli"  # Replace with the actual package name on PyPI
+    package_name = "amen-cli"
     console.print(f"🔍 Checking for updates for '{package_name}'...", style="blue")
 
     try:
-        # Fetch the latest version from PyPI
         response = requests.get(f"https://pypi.org/pypi/{package_name}/json", timeout=10)
         response.raise_for_status()
         latest_version = response.json()["info"]["version"]
 
-        # Get the current installed version
         current_version = subprocess.run(
             [sys.executable, "-m", "pip", "show", package_name],
             capture_output=True,
@@ -380,7 +377,6 @@ def check_update():
             console.print(f"⬆️ New version available: {latest_version} (current: {current_version}).", style="yellow")
             update = questionary.confirm("Do you want to update to the latest version?").ask()
             if update:
-                # Run pip install to upgrade the package
                 subprocess.run(
                     [sys.executable, "-m", "pip", "install", "--upgrade", f"{package_name}=={latest_version}"],
                     check=True,
@@ -394,6 +390,43 @@ def check_update():
         console.print(f"❌ Failed to update the package: {e}", style="red")
     except Exception as e:
         console.print(f"❌ An unexpected error occurred: {e}", style="red")
+
+@main.command()
+@click.argument("app_name", type=str)
+@click.option(
+    "--framework",
+    "-f",
+    type=click.Choice(list(FRAMEWORKS.keys()), case_sensitive=False),
+    help="Specify the framework (flask, fastapi, etc.). If not provided, it will be detected from .amen_config.",
+)
+
+@main.command()
+@click.argument("app_name", type=str)
+@click.option(
+    "--framework",
+    "-f",
+    type=click.Choice(list(FRAMEWORKS.keys()), case_sensitive=False),
+    help="Specify the framework (flask, fastapi, etc.). If not provided, it will be detected from .amen_config.",
+)
+def config(app_name, framework):
+    """Manage project-specific configuration settings."""
+    app_path = Path.cwd() / app_name
+
+    if not app_path.exists() or not app_path.is_dir():
+        console.print(f"❌ Application '{app_name}' not found.", style="red")
+        return
+
+    config_file = app_path / ".env"
+    if not config_file.exists():
+        console.print(f"⚙️  Creating .env file for '{app_name}'.", style="yellow")
+        config_file.touch()
+
+    console.print(f"⚙️  Opening .env file for '{app_name}' in Ring editor.", style="green")
+    
+    try:
+        edit_file(str(config_file))
+    except Exception as e:
+        console.print(f"❌ Failed to open .env file: {e}", style="red")
 
 if __name__ == "__main__":
     main()

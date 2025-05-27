@@ -62,6 +62,12 @@ amen test myapp
 
 # Check for updates to the CLI
 amen check-update
+
+# Manage project configuration
+amen config <app_name>
+
+# Example:
+amen config myapp
 ```
 
 ## 🌟 Project Structure

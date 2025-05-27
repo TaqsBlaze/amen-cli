@@ -15,11 +15,13 @@ class TemplateManager:
         """Generate project structure based on framework and app type"""
         
         # Create all necessary directories
-        (app_path / "app").mkdir(exist_ok=True)
-        (app_path / "app" / "templates").mkdir(exist_ok=True)
-        (app_path / "app" / "static").mkdir(exist_ok=True)
-        (app_path / "app" / "static" / "css").mkdir(exist_ok=True)
-        (app_path / "app" / "static" / "js").mkdir(exist_ok=True)
+        (app_path / app_name).mkdir(exist_ok=True)
+        (app_path / app_name / "api").mkdir(exist_ok=True)
+        (app_path / app_name / "auth").mkdir(exist_ok=True)
+        (app_path / app_name / "models").mkdir(exist_ok=True)
+        (app_path / app_name / "static").mkdir(exist_ok=True)
+        (app_path / app_name / "static" / "uploads").mkdir(exist_ok=True)
+        (app_path / app_name / "templates").mkdir(exist_ok=True)
         (app_path / "tests").mkdir(exist_ok=True)  # Create tests directory
         
         # Generate framework-specific files
@@ -34,7 +36,8 @@ class TemplateManager:
     
     def _generate_flask_files(self, app_path: Path, app_type: str, app_name: str):
         """Generate Flask files"""
-        app_content = f"""from flask import Flask, render_template, jsonify
+        app_content = f"""from flask import Flask
+from {app_name}.api.endpoints import api_bp
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
@@ -46,26 +49,27 @@ CORS(app)
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key')
 
-@app.route('/')
-def index():
-    {"return render_template('index.html', title='" + app_name + "')" if app_type == 'webapp' else "return jsonify({'message': 'Welcome to " + app_name + " API!'})"}
-
-@app.route('/health')
-def health():
-    return jsonify({{'status': 'healthy', 'service': '{app_name}'}})
+# Register blueprints
+app.register_blueprint(api_bp)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)), debug=True)
 """
-        self._write_file(app_path / "app" / "app.py", app_content)
-        self._write_file(app_path / "run.py", "from app.app import app\n\nif __name__ == '__main__':\n    app.run()")
+        self._write_file(app_path / app_name / "app.py", app_content)
+        self._write_file(app_path / "run.py", f"from {app_name}.app import app\n\nif __name__ == '__main__':\n    app.run()")
         
         if app_type == 'webapp':
             self._generate_html_template(app_path, app_name)
+            
+        self._generate_token_file(app_path, app_name, framework="flask")
+        self._generate_endpoints_file(app_path, app_name, framework='flask', app_type=app_type)
     
     def _generate_fastapi_files(self, app_path: Path, app_type: str, app_name: str):
         """Generate FastAPI files"""
-        main_content = f"""from fastapi import FastAPI, Request
+        static_mount = f"app.mount('/static', StaticFiles(directory='{app_name}/static'), name='static')" if app_type == 'webapp' else ""
+        templates_init = f"templates = Jinja2Templates(directory='{app_name}/templates')" if app_type == 'webapp' else ""
+        main_content = f"""from fastapi import FastAPI
+from {app_name}.api.endpoints import api_router
 from fastapi.middleware.cors import CORSMiddleware
 {"from fastapi.templating import Jinja2Templates" if app_type == 'webapp' else ""}
 {"from fastapi.staticfiles import StaticFiles" if app_type == 'webapp' else ""}
@@ -84,26 +88,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-{"app.mount('/static', StaticFiles(directory='app/static'), name='static')" if app_type == 'webapp' else ""}
-{"templates = Jinja2Templates(directory='app/templates')" if app_type == 'webapp' else ""}
+{static_mount}
+{templates_init}
 
-@app.get("/")
-async def root({"request: Request" if app_type == 'webapp' else ""}):
-    {"return templates.TemplateResponse('index.html', {'request': request, 'title': '" + app_name + "'})" if app_type == 'webapp' else 'return {"message": "Welcome to ' + app_name + ' API!"}'}
-
-@app.get("/health")
-async def health():
-    return {{"status": "healthy", "service": "{app_name}"}}
+app.include_router(api_router)
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
 """
-        self._write_file(app_path / "app" / "main.py", main_content)
-        self._write_file(app_path / "run.py", "import uvicorn\nfrom app.main import app\n\nif __name__ == '__main__':\n    uvicorn.run(app, host='0.0.0.0', port=8000)")
+        self._write_file(app_path / app_name / "main.py", main_content)
+        self._write_file(app_path / "run.py", f"import uvicorn\nfrom {app_name}.main import app\n\nif __name__ == '__main__':\n    uvicorn.run(app, host='0.0.0.0', port=8000)")
         
         if app_type == 'webapp':
             self._generate_html_template(app_path, app_name)
+        
+        self._generate_token_file(app_path, app_name, framework="fastapi")
+        self._generate_endpoints_file(app_path, app_name, framework='fastapi', app_type=app_type)
     
     def _generate_html_template(self, app_path: Path, app_name: str):
         """Generate HTML template"""
@@ -123,7 +124,7 @@ if __name__ == "__main__":
     <script src="/static/js/app.js"></script>
 </body>
 </html>"""
-        self._write_file(app_path / "app" / "templates" / "index.html", template_content)
+        self._write_file(app_path / app_name / "templates" / "index.html", template_content)
     
     def _generate_common_files(self, app_path: Path, framework: str, app_name: str, app_type: str):
         """Generate common files for all projects"""
@@ -174,13 +175,14 @@ Your application will be available at `http://localhost:{framework_info['default
 ```
 {app_name}/
 ├── venv/                   # Virtual environment
-├── app/                    # Main application code
-│   ├── __init__.py
-│   ├── {framework_info['entry_file']}     # Main application file
+├── {app_name}/             # Main application code
+│   ├── api/                # API module
+│   ├── auth/               # Authentication module
+│   ├── models/             # Models module
+│   ├── static/             # Static files (CSS, JS, images)
+│       ├── uploads/
 │   ├── templates/          # HTML templates (if web app)
-│   └── static/            # Static files (CSS, JS, images)
-│       ├── css/
-│       └── js/
+│   └── app.py              # Main application file
 ├── tests/                  # Test files
 ├── docs/                   # Documentation
 ├── requirements.txt        # Python dependencies
@@ -478,7 +480,7 @@ footer {
 }
 """
         
-        self._write_file(app_path / "app" / "static" / "css" / "style.css", css_content)
+        self._write_file(app_path / app_name / "static" / "css" / "style.css", css_content)
         
         # Generate JavaScript
         js_content = """// Main application JavaScript
@@ -560,7 +562,7 @@ const utils = {
 // Export for use in other scripts
 window.AppUtils = utils;
 """
-        self._write_file(app_path / "app" / "static" / "js" / "app.js", js_content)
+        self._write_file(app_path / app_name / "static" / "js" / "app.js", js_content)
         
         # Generate test files
         test_content = f"""import pytest
@@ -568,7 +570,7 @@ import sys
 import os
 
 # Add the app directory to the Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'app'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '{app_name}'))
 
 def test_basic_functionality():
     '''Test basic functionality'''
@@ -605,7 +607,121 @@ addopts = -v --tb=short
         
         self._write_file(app_path / "pytest.ini", pytest_ini)
 
-        self._write_file(app_path / "pytest.ini", pytest_ini)
+    def _generate_token_file(self, app_path: Path, app_name: str, framework: str = "flask"):
+        """Generate token.py file for the selected framework"""
+        if framework == "flask":
+            token_content = f"""import jwt
+from functools import wraps
+from flask import request, jsonify
+import os
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        if 'Authorization' in request.headers:
+            token = request.headers['Authorization'].split(" ")[1]
+
+        if not token:
+            return jsonify({{'message': 'Token is missing!'}}), 401
+
+        try:
+            data = jwt.decode(token, os.getenv('SECRET_KEY'), algorithms=["HS256"])
+            # current_user = Users.query.filter_by(public_id=data['public_id']).first()
+            current_user = data  # Placeholder
+        except Exception:
+            return jsonify({{'message': 'Token is invalid!'}}), 401
+
+        return f(current_user, *args, **kwargs)
+
+    return decorated
+"""
+        elif framework == "fastapi":
+            token_content = f"""import jwt
+from fastapi import Request, HTTPException, status, Depends
+import os
+
+def token_required(request: Request):
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith('Bearer '):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token is missing!")
+    token = auth_header.split(" ")[1]
+    try:
+        data = jwt.decode(token, os.getenv('SECRET_KEY'), algorithms=["HS256"])
+        # current_user = get_user_from_db(data['public_id'])
+        current_user = data  # Placeholder
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token is invalid!")
+    return current_user
+"""
+        else:
+            token_content = "# Not implemented for this framework.\n"
+
+        self._write_file(app_path / app_name / "auth" / "token.py", token_content)
+
+    def _generate_endpoints_file(self, app_path: Path, app_name: str, framework: str, app_type: str):
+        """Generate endpoints.py file"""
+        if framework == 'flask':
+            endpoints_content = f"""from flask import Blueprint, jsonify, render_template
+from {app_name}.auth.token import token_required
+
+api_bp = Blueprint('api', __name__)
+
+@api_bp.route('/')
+def index():
+    {"return render_template('index.html', title='" + app_name + "')" if app_type == 'webapp' else "return jsonify({'message': 'Welcome to " + app_name + " API!'})"}
+
+@api_bp.route('/health')
+def health():
+    return jsonify({{'status': 'healthy', 'service': '{app_name}'}})
+
+@api_bp.route('/protected')
+@token_required
+def protected(current_user):
+    return jsonify({{'message': 'This is a protected route!', 'user': current_user}})
+"""
+        elif framework == 'fastapi':
+            if app_type == 'webapp':
+                endpoints_content = f"""from fastapi import APIRouter, Request
+from fastapi.templating import Jinja2Templates
+from {app_name}.auth.token import token_required
+from fastapi import Depends, HTTPException, status
+
+templates = Jinja2Templates(directory="{app_name}/templates")
+api_router = APIRouter()
+
+@api_router.get("/")
+async def root(request: Request):
+    return templates.TemplateResponse('index.html', {{'request': request, 'title': '{app_name}'}})
+
+@api_router.get("/health")
+async def health():
+    return {{"status": "healthy", "service": "{app_name}"}}
+
+@api_router.get("/protected")
+async def protected(current_user: dict = Depends(token_required)):
+    return {{"message": "This is a protected route!", "user": current_user}}
+"""
+            else:
+                endpoints_content = f"""from fastapi import APIRouter
+from {app_name}.auth.token import token_required
+from fastapi import Depends, HTTPException, status
+
+api_router = APIRouter()
+
+@api_router.get("/")
+async def root():
+    return {{"message": "Welcome to {app_name} API!"}}
+
+@api_router.get("/health")
+async def health():
+    return {{"status": "healthy", "service": "{app_name}"}}
+
+@api_router.get("/protected")
+async def protected(current_user: dict = Depends(token_required)):
+    return {{"message": "This is a protected route!", "user": current_user}}
+"""
+        self._write_file(app_path / app_name / "api" / "endpoints.py", endpoints_content)
 
 # MANIFEST.in - for including non-Python files in the package
 MANIFEST_IN = """
