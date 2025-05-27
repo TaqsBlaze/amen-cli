@@ -6,7 +6,7 @@ from pathlib import Path
 
 import click
 import questionary
-import requests  # Add this import for HTTP requests
+import requests  
 from rich.console import Console
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
@@ -14,7 +14,6 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from .frameworks import FRAMEWORKS
 from .templates import TemplateManager
 from .editor import edit_file
-from .auth import scaffold_auth  # Import the new function
 
 console = Console()
 
@@ -399,17 +398,8 @@ def check_update():
     type=click.Choice(list(FRAMEWORKS.keys()), case_sensitive=False),
     help="Specify the framework (flask, fastapi, etc.). If not provided, it will be detected from .amen_config.",
 )
-
-@main.command()
-@click.argument("app_name", type=str)
-@click.option(
-    "--framework",
-    "-f",
-    type=click.Choice(list(FRAMEWORKS.keys()), case_sensitive=False),
-    help="Specify the framework (flask, fastapi, etc.). If not provided, it will be detected from .amen_config.",
-)
 def config(app_name, framework):
-    
+
     """Manage project-specific configuration settings."""
     app_path = Path.cwd() / app_name
 

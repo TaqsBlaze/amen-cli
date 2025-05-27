@@ -7,12 +7,11 @@ def edit_file(file_path):
     A simple text editor using Tkinter.
     """
     root = tk.Tk()
-    root.title("Simple Editor")
+    root.title("Ring Editor")
     
     text_area = tk.Text(root, wrap=tk.WORD)
     text_area.pack(expand=True, fill='both')
     
-    # Open file and insert content
     try:
         with open(file_path, "r") as f:
             content = f.read()
@@ -94,11 +93,3 @@ def edit_file(file_path):
     
     root.mainloop()
 
-# if __name__ == "__main__":
-#     file_to_edit = " " 
-    
-#     if not os.path.exists(file_to_edit):
-#         with open(file_to_edit, "w") as f:
-#             f.write("Initial content.\n")
-    
-#     edit_file(file_to_edit)
