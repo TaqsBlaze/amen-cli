@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AMEN CLI Wiki</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="https://raw.githubusercontent.com/TaqsBlaze/amen-cli/refs/heads/main/image/icon.png">
+</head>
+<body class="bg-gradient-to-br from-indigo-100 via-white to-purple-100 min-h-screen text-gray-800">
+  <header class="bg-gradient-to-r from-indigo-600 to-purple-600 py-8 shadow-lg">
+    <div class="container mx-auto flex flex-col items-center">
+      <img src="https://raw.githubusercontent.com/TaqsBlaze/amen-cli/refs/heads/main/image/icon.png" alt="AMEN CLI" class="w-16 h-16 mb-2">
+      <h1 class="text-4xl font-extrabold text-white tracking-tight mb-2">AMEN CLI Wiki</h1>
+      <p class="text-indigo-100 text-lg">A Laravel-inspired Python Web Application Scaffolding Tool</p>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-10">
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-indigo-700 mb-4">✨ Features</h2>
+      <ul class="list-disc list-inside space-y-1 text-lg">
+        <li>Interactive project setup wizard</li>
+        <li>Multiple framework support: Flask, FastAPI, Bottle (WIP), Pyramid (WIP)</li>
+        <li>Modular project structure</li>
+        <li>Webapp and API templates</li>
+        <li>Automatic virtual environment setup</li>
+        <li>Dependency management</li>
+        <li>Test scaffolding with pytest</li>
+        <li>Update checker for the CLI</li>
+        <li>Easy project runner</li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-purple-700 mb-4">🛠️ Installation</h2>
+      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto"><code>pip install amen-cli</code></pre>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-pink-700 mb-4">🚀 Quick Start</h2>
+      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto"><code># Create a new project
+amen create
+
+# Or use flags for automation:
+amen create -f flask -t webapp -n myapp
+</code></pre>
+      <div class="mt-4">
+        <span class="font-semibold text-gray-700">Flags:</span>
+        <ul class="list-disc list-inside ml-4">
+          <li><code>-f, --framework</code>   Framework (flask, fastapi, bottle, pyramid)</li>
+          <li><code>-t, --type</code>        Application type (webapp, api)</li>
+          <li><code>-n, --name</code>        Project name</li>
+        </ul>
+      </div>
+      <div class="mt-4">
+        <span class="font-semibold text-gray-700">Run your app:</span>
+        <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto"><code>cd myapp
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+python run.py
+# Or, from the parent directory:
+amen run myapp
+</code></pre>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-blue-700 mb-4">🏗️ Project Structure</h2>
+      <pre class="bg-gray-900 text-blue-200 rounded p-4 overflow-x-auto"><code>your-app/
+├── venv/                   # Virtual environment
+├── your-app/               # Main application package
+│   ├── api/                # API endpoints (endpoints.py)
+│   ├── auth/               # Authentication (token.py, etc.)
+│   ├── models/             # Models module
+│   ├── static/             # Static files (CSS, JS, images)
+│   │   ├── uploads/
+│   │   ├── css/
+│   │   └── js/
+│   ├── templates/          # HTML templates (if webapp)
+│   └── app.py / main.py    # Main application file (Flask: app.py, FastAPI: main.py)
+├── tests/                  # Test files
+├── docs/                   # Documentation
+├── requirements.txt        # Python dependencies
+├── .env                    # Environment variables (local)
+├── .env.example            # Environment variables template
+├── .gitignore              # Git ignore rules
+├── run.py                  # Application runner
+└── README.md               # Project documentation
+</code></pre>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-teal-700 mb-4">🎯 Framework Support</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white rounded shadow">
+          <thead>
+            <tr>
+              <th class="px-4 py-2 border-b-2 border-indigo-200 text-left">Framework</th>
+              <th class="px-4 py-2 border-b-2 border-indigo-200 text-left">Description</th>
+              <th class="px-4 py-2 border-b-2 border-indigo-200 text-left">Default Port</th>
+              <th class="px-4 py-2 border-b-2 border-indigo-200 text-left">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="px-4 py-2">Flask</td>
+              <td class="px-4 py-2">Lightweight WSGI web framework</td>
+              <td class="px-4 py-2">5000</td>
+              <td class="px-4 py-2 text-green-600 font-bold">✅</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-2">FastAPI</td>
+              <td class="px-4 py-2">Modern, fast web framework</td>
+              <td class="px-4 py-2">8000</td>
+              <td class="px-4 py-2 text-green-600 font-bold">✅</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-2">Django</td>
+              <td class="px-4 py-2">High-level Python web framework</td>
+              <td class="px-4 py-2">8000</td>
+              <td class="px-4 py-2 text-red-500 font-bold">❌</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-2">Bottle</td>
+              <td class="px-4 py-2">Fast, simple micro framework</td>
+              <td class="px-4 py-2">8080</td>
+              <td class="px-4 py-2 text-yellow-500 font-bold">🚧</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-2">Pyramid</td>
+              <td class="px-4 py-2">Flexible web framework</td>
+              <td class="px-4 py-2">6543</td>
+              <td class="px-4 py-2 text-yellow-500 font-bold">🚧</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-orange-700 mb-4">📖 Usage</h2>
+      <pre class="bg-gray-900 text-orange-200 rounded p-4 overflow-x-auto"><code># Create a new project
+amen create
+
+# Run your application
+amen run &lt;app_name&gt;
+
+# Run tests
+amen test &lt;app_name&gt;
+
+# Check for updates
+amen check-update
+
+# Manage project configuration
+amen config &lt;app_name&gt;
+</code></pre>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-green-700 mb-4">🔧 Development</h2>
+      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto"><code>git clone https://github.com/taqsblaze/amen-cli.git
+pip install -e .
+pip install pytest pytest-cov
+pytest
+pytest --cov
+</code></pre>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-indigo-700 mb-4">🤝 Contributing</h2>
+      <ol class="list-decimal list-inside ml-4 text-lg">
+        <li>Fork the repository</li>
+        <li>Create your feature branch: <code>git checkout -b feature/amazing-feature</code></li>
+        <li>Make your changes</li>
+        <li>Push to the branch: <code>git push origin feature/amazing-feature</code></li>
+        <li>Open a Pull Request</li>
+      </ol>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-pink-700 mb-4">👥 Contact & Support</h2>
+      <ul class="list-disc list-inside ml-4 text-lg">
+        <li>🌐 <a href="https://github.com/taqsblaze/amen-cli" class="text-indigo-600 hover:underline">GitHub Repository</a></li>
+        <li>🐛 <a href="https://github.com/taqsblaze/amen-cli/issues" class="text-indigo-600 hover:underline">Issue Tracker</a></li>
+        <li>📧 <a href="mailto:tanakah30@gmail.com" class="text-indigo-600 hover:underline">Send Email</a></li>
+      </ul>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-blue-700 mb-4">⭐ Credits</h2>
+      <p class="text-lg">
+        Created by <a href="https://www.linkedin.com/in/taqsblaze" class="text-indigo-600 hover:underline">Tanaka Chinengundu</a><br>
+        Inspired by Laravel's elegant development experience
+      </p>
+    </section>
+  </main>
+
+  <footer class="bg-gradient-to-r from-indigo-600 to-purple-600 py-6 mt-10">
+    <div class="container mx-auto text-center text-white text-lg font-semibold">
+      Made with <span class="text-pink-400">❤️</span> by Tanaka Chinengundu
+    </div>
+  </footer>
+</body>
+</html>
