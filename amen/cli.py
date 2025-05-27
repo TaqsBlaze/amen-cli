@@ -409,6 +409,7 @@ def check_update():
     help="Specify the framework (flask, fastapi, etc.). If not provided, it will be detected from .amen_config.",
 )
 def config(app_name, framework):
+    
     """Manage project-specific configuration settings."""
     app_path = Path.cwd() / app_name
 
