@@ -1,4 +1,15 @@
 # 🚀 AMEN CLI   ![icon](https://raw.githubusercontent.com/TaqsBlaze/amen-cli/refs/heads/main/image/icon.png)
+[![PyPI Version](https://img.shields.io/pypi/v/amen-cli)](https://pypi.org/project/amen-cli/)
+[![License](https://img.shields.io/github/license/TaqsBlaze/amen-cli)](https://github.com/TaqsBlaze/amen-cli/blob/main/LICENSE)
+[![Python Versions](https://img.shields.io/pypi/pyversions/amen-cli)](https://pypi.org/project/amen-cli/)
+[![GitHub Stars](https://img.shields.io/github/stars/TaqsBlaze/amen-cli?style=social)](https://github.com/TaqsBlaze/amen-cli)
+[![GitHub Issues](https://img.shields.io/github/issues/TaqsBlaze/amen-cli)](https://github.com/TaqsBlaze/amen-cli/issues)
+[![GitHub Forks](https://img.shields.io/github/forks/TaqsBlaze/amen-cli?style=social)](https://github.com/TaqsBlaze/amen-cli)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/TaqsBlaze/amen-cli)](https://github.com/TaqsBlaze/amen-cli/commits/main)
+[![GitHub Contributors](https://img.shields.io/github/contributors/TaqsBlaze/amen-cli)](https://github.com/TaqsBlaze/amen-cli/graphs/contributors)
+[![GitHub Code Size](https://img.shields.io/github/languages/code-size/TaqsBlaze/amen-cli)](https://github.com/TaqsBlaze/amen-cli)
+[![GitHub Repo Size](https://img.shields.io/github/repo-size/TaqsBlaze/amen-cli)](https://github.com/TaqsBlaze/amen-cli)
+
 A laravel installer inspired Python Web Application Scaffolding Tool that helps you create web applications with ease!
 
 ## ✨ Features
