@@ -66,11 +66,15 @@ if __name__ == '__main__':
     
     def _generate_fastapi_files(self, app_path: Path, app_type: str, app_name: str):
         """Generate FastAPI files"""
+
+        static_mount = f"app.mount('/static', StaticFiles(directory='{app_name}/static'), name='static')" if app_type == 'webapp' else ""
+        template_mount = f"templates = Jinja2Templates(directory='{app_name}/templates')" if app_type == 'webapp' else ""
+
         main_content = f"""from fastapi import FastAPI
 from {app_name}.api.endpoints import api_router
 from fastapi.middleware.cors import CORSMiddleware
-{"from fastapi.templating import Jinja2Templates" if app_type == 'webapp' else ""}
-{"from fastapi.staticfiles import StaticFiles" if app_type == 'webapp' else ""}
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 import os
 
@@ -86,9 +90,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-{"app.mount('/static', StaticFiles(directory='{app_name}/static'), name='static')" if app_type == 'webapp' else ""}
-{"templates = Jinja2Templates(directory='{app_name}/templates')" if app_type == 'webapp' else ""}
-
+{static_mount}
+{template_mount}
 app.include_router(api_router)
 
 if __name__ == "__main__":
@@ -660,7 +663,7 @@ def token_required(request: Request):
     def _generate_endpoints_file(self, app_path: Path, app_name: str, framework: str, app_type: str):
         """Generate endpoints.py file"""
         if framework == 'flask':
-            endpoints_content = f"""from flask import Blueprint, jsonify, render_template
+            endpoints_content = f"""from flask import Blueprint, jsonify, render_template, request
 from {app_name}.auth.token import token_required
 
 api_bp = Blueprint('api', __name__)
@@ -679,20 +682,48 @@ def protected(current_user):
     return jsonify({{'message': 'This is a protected route!', 'user': current_user}})
 """
         elif framework == 'fastapi':
-            endpoints_content = f"""from fastapi import APIRouter, Request
-{"from fastapi.templating import Jinja2Templates" if app_type == 'webapp' else ""}
+            if app_type == 'webapp':
+                endpoints_content = f"""from fastapi import APIRouter, Request
+from fastapi.templating import Jinja2Templates
+from {app_name}.auth.token import token_required
+from fastapi import Depends, HTTPException, status
+
+
+api_router = APIRouter()
+
+
+@api_router.get("/")
+async def root(request: Request):
+    templates = Jinja2Templates(directory='{app_name}/templates')
+    return templates.TemplateResponse('index.html', {{'request': request, 'title': '{app_name}'}})
+
+
+@api_router.get("/health")
+async def health():
+    return {{"status": "healthy", "service": "{app_name}"}}
+
+
+@api_router.get("/protected")
+async def protected(current_user: dict = Depends(token_required)):
+    return {{"message": "This is a protected route!", "user": current_user}}
+"""
+            else:
+                endpoints_content = f"""from fastapi import APIRouter
 from {app_name}.auth.token import token_required
 from fastapi import Depends, HTTPException, status
 
 api_router = APIRouter()
 
+
 @api_router.get("/")
-async def root({"request: Request" if app_type == 'webapp' else ""}):
-    {"return templates.TemplateResponse('index.html', {'request': request, 'title': '" + app_name + "'})" if app_type == 'webapp' else 'return {"message": "Welcome to ' + app_name + ' API!"}'}
+async def root():
+    return {{"message": "Welcome to {app_name} API!"}}
+
 
 @api_router.get("/health")
 async def health():
     return {{"status": "healthy", "service": "{app_name}"}}
+
 
 @api_router.get("/protected")
 async def protected(current_user: dict = Depends(token_required)):
