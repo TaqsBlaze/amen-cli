@@ -377,7 +377,7 @@ def check_update():
             update = questionary.confirm("Do you want to update to the latest version?").ask()
             if update:
                 subprocess.run(
-                    [sys.executable, "-m", "pip", "install", "--upgrade", f"{package_name}=={latest_version}"],
+                    [sys.executable, "-m", "pip", "install", "--use-feature=fast-deps", "--upgrade", "--user", f"{package_name}=={latest_version}"],
                     check=True,
                 )
                 console.print(f"✅ Successfully updated to version {latest_version}.", style="green")
