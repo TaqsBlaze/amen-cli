@@ -396,8 +396,13 @@ def check_update():
 
 @main.command
 def about():
-    from . import __version__
-    console.print(Panel.fit(f"Current version: [blue]{__version__}[/blue]", style="green"))
+    from . import __version__, __description__,__author__,__url__, SUPPORTED_FRAMEWORKS
+    console.print(Panel.fit(f"""
+                    Current version: [blue]{__version__}[/blue]
+                    Description: [white]{__description__}[/white]
+                    Developed by: [bold magenta]{__author__}[/bold magenta]
+                    Project URL: [bright_cyan][link={__url__}]{__url__}[/link][/bright_cyan]
+                            """, style="green"))
 
 @main.command()
 @click.argument("app_name", type=str)
