@@ -27,7 +27,7 @@ jobs:
           python-version: "3.x"
 
       - name: Clean dist directory
-        run: rm -rf dist/*.*
+        run: rm -rf dist/
 
       - name: Build release distributions
         run: |
