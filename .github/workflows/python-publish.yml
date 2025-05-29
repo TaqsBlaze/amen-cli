@@ -26,6 +26,9 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Clean dist directory
+        run: rm -rf dist/*.*
+
       - name: Build release distributions
         run: |
           # NOTE: put your own distribution build steps here.
