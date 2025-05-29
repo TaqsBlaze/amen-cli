@@ -1,4 +1,4 @@
-"""AMEN CLI - Python Web Framework Scaffolding Tool"""
+"""AMEN CLI - Python Web Application Scaffolding Tool"""
 __version__ = "0.4.6"
 __author__ = "Tanaka Chinengundu"
 

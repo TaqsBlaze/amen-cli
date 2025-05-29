@@ -393,6 +393,11 @@ def check_update():
     except Exception as e:
         console.print(f"❌ An unexpected error occurred: {e}", style="red")
 
+@main.command
+def version():
+    from . import __version__
+    console.print(f"Current version: {__version__}", style="green")
+
 @main.command()
 @click.argument("app_name", type=str)
 @click.option(
