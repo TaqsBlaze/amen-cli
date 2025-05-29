@@ -72,11 +72,12 @@ class AmenCLI:
     
     def welcome_banner(self):
         """Display welcome banner"""
+        from . import __version__
         console.print(Panel.fit(
-            """AMEN: inspired by the laravel installer, a python Web Framework Scaffolding
+            f"""AMEN: inspired by the laravel installer, a python Web Framework Scaffolding
         Create your web applications with ease!
         By [bold magenta]Tanaka Chinengundu[/bold magenta]
-        [bold blue]
+        [bold blue]Version: {__version__}[/bold blue]
             """,
             border_style="magenta"
         ))
@@ -394,9 +395,9 @@ def check_update():
         console.print(f"❌ An unexpected error occurred: {e}", style="red")
 
 @main.command
-def version():
+def about():
     from . import __version__
-    console.print(f"Current version: {__version__}", style="green")
+    console.print(Panel.fit(f"Current version: [blue]{__version__}[/blue]", style="green"))
 
 @main.command()
 @click.argument("app_name", type=str)
