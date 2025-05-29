@@ -6,13 +6,13 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="amen-cli",
-    version="0.4.3",
+    version="0.4.4",
     author="Tanaka Chinengundu",
     author_email="tanakah30@gmail.com",
     description="composer-inspired Python web framework scaffolding tool",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/taqsblaze/amen-cli",
+    url="https://taqsblaze.github.io/amen-cli",
     packages=find_packages(exclude=["tests*", "examples*"]),
     install_requires=[
         "click>=8.0.0",
@@ -50,4 +50,8 @@ setup(
         "Documentation": "https://github.com/taqsblaze/amen-cli#readme",
     },
     keywords=["python", "web-framework", "cli", "scaffold", "amen", "composer", "laravel", "flask", "django", "fastapi", "bottle", "pyramid"],
+    data_files=[
+        ('share/applications', ['debian/amen-cli.desktop']),
+        ('share/icons/hicolor/128x128/apps', ['image/icon/icon.ico']),
+    ],
 )

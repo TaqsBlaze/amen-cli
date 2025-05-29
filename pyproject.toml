@@ -1,0 +1,91 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "amen-cli"
+version = "0.4.3"
+description = "A laravel installer inspired Python Web Application Scaffolding Tool"
+readme = "README.md"
+authors = [
+    { name = "Tanaka Chinengundu", email = "tanakah30@gmail.com" },
+]
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.0.0",
+    "rich>=12.0.0",
+    "questionary>=1.10.0",
+    "virtualenv>=20.0.0",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/taqsblaze/amen-cli"
+Documentation = "https://github.com/taqsblaze/amen-cli#readme"
+Repository = "https://github.com/taqsblaze/amen-cli.git"
+"Bug Tracker" = "https://github.com/taqsblaze/amen-cli/issues"
+
+[project.scripts]
+amen = "amen.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["amen"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0.0",
+    "pytest-cov>=2.0.0",
+    "black>=21.0.0",
+    "flake8>=3.9.0",
+    "mypy>=0.900",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=amen --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["amen"]
+omit = [
+    "*/site-packages/*",
+    "*/tests/*",
+    "setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "pass",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
