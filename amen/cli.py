@@ -23,6 +23,22 @@ class PipNetworkError(Exception):
 VALID_FRAMEWORKS = ['flask', 'fastapi', 'bottle', 'pyramid']
 VALID_PROJECT_TYPES = ['webapp', 'api']
 
+def get_venv_path(app_path: Path) -> Path:
+    """Get virtual environment path based on OS"""
+    return app_path / "venv"
+
+def get_pip_path(venv_path: Path) -> Path:
+    """Get pip executable path based on OS"""
+    if sys.platform.startswith('linux'):
+        return venv_path / "bin" / "pip"
+    return venv_path / "Scripts" / "pip"
+
+def get_python_path(venv_path: Path) -> Path:
+    """Get python executable path based on OS"""
+    if sys.platform.startswith('linux'):
+        return venv_path / "bin" / "python"
+    return venv_path / "Scripts" / "python"
+
 def create_project(path, framework, project_type):
     """
     Create a new project with the specified framework and type.
@@ -99,7 +115,7 @@ class AmenCLI:
     
     def create_virtual_environment(self, app_path: Path) -> bool:
         """Create virtual environment"""
-        venv_path = app_path / "venv"
+        venv_path = get_venv_path(app_path)
         
         try:
             with Progress(
@@ -118,13 +134,8 @@ class AmenCLI:
     
     def install_framework(self, app_path: Path, framework: str) -> bool:
         """Install selected framework in virtual environment"""
-        venv_path = app_path / "venv"
-        
-        # Determine pip path based on OS
-        if sys.platform == "win32":
-            pip_path = venv_path / "Scripts" / "pip"
-        else:
-            pip_path = venv_path / "bin" / "pip"
+        venv_path = get_venv_path(app_path)
+        pip_path = get_pip_path(venv_path)
 
         framework_info = FRAMEWORKS[framework]
         packages = framework_info['packages']
@@ -272,16 +283,11 @@ def run(app_name):
         console.print(f"❌ Application '{app_name}' not found.", style="red")
         return
 
-    venv_path = Path(app_path) / "venv"
+    venv_path = get_venv_path(Path(app_path))
     if not venv_path.exists() or not venv_path.is_dir():
         console.print(f"❌ Virtual environment not found for '{app_name}'.", style="red")
         console.print("   Please create the application using `amen create` first.", style="yellow")
         return
-
-    if sys.platform == "win32":
-        activate_script = venv_path / "Scripts" / "activate"
-    else:
-        activate_script = venv_path / "bin" / "activate"
 
     # Find the framework used by the application (read from a config file or similar)
     config_file = Path(app_path) / ".amen_config"
@@ -301,10 +307,7 @@ def run(app_name):
     default_port = FRAMEWORKS[framework]['default_port']
 
     # Construct the run command
-    if sys.platform == "win32":
-        run_command = f"\"{venv_path / 'Scripts' / 'python'}\" \"{str(Path(app_path) / entry_file)}\""
-    else:
-        run_command = f"\"{venv_path / 'bin' / 'python'}\" \"{Path(app_path) / entry_file}\""
+    run_command = f"\"{get_python_path(venv_path)}\" \"{Path(app_path) / entry_file}\""
 
     try:
         console.print(f"🚀 Starting '{app_name}' using {framework}...", style="green")
@@ -327,7 +330,7 @@ def test(app_name):
         console.print(f"❌ Application '{app_name}' not found.", style="red")
         return
 
-    venv_path = Path(app_path) / "venv"
+    venv_path = get_venv_path(Path(app_path))
     if not venv_path.exists() or not venv_path.is_dir():
         console.print(f"❌ Virtual environment not found for '{app_name}'.", style="red")
         console.print("   Please create the application using `amen create` first.", style="yellow")

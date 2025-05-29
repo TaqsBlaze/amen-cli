@@ -31,9 +31,30 @@ A laravel installer inspired Python Web Application Scaffolding Tool that helps 
 
 ## 🛠️ Installation
 
+### Using pip (All platforms)
 ```bash
 pip install amen-cli
 ```
+
+### Debian/Ubuntu
+```bash
+# Install required dependencies
+sudo apt-get update
+sudo apt-get install python3-pip python3-venv
+
+# Install AMEN CLI
+pip3 install amen-cli
+
+# Optional: Install system-wide (requires root)
+sudo pip3 install amen-cli
+```
+
+### Linux Post-Installation
+Make sure the amen command is in your PATH:
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+Add this line to your ~/.bashrc or ~/.zshrc for permanent effect.
 
 ## 📖 Usage
 
