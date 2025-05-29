@@ -276,7 +276,7 @@ def create(framework, type, name):
 @click.argument("app_name", type=str)
 def run(app_name):
     """Runs the development server for a created application."""
-    app_path = str(f"{Path.cwd()}\\" + app_name)
+    app_path = str(Path.cwd() / app_name)
 
     print("App path", app_path)
     if not Path(app_path).exists() or not Path(app_path).is_dir():

@@ -19,6 +19,8 @@ setup(
         "rich>=12.0.0",
         "questionary>=1.10.0",
         "virtualenv>=20.0.0",
+        "requests>=2.25.0",
+        "pyyaml>=5.4.0",
     ],
     entry_points={
         'console_scripts': [
