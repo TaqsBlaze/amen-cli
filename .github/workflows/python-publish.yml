@@ -27,12 +27,12 @@ jobs:
           python-version: "3.x"
 
       - name: Clean dist directory
-        run: rm -rf dist/
+        run: rm -rf dist
 
       - name: Build release distributions
         run: |
           # NOTE: put your own distribution build steps here.
-          python -m pip install build
+          python -m pip install build twine
           python -m build
           python -m twine check dist/*
 
