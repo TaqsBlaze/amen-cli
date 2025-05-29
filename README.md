@@ -36,6 +36,26 @@ A laravel installer inspired Python Web Application Scaffolding Tool that helps 
 pip install amen-cli
 ```
 
+### Using uv
+
+[uv](https://github.com/astral-sh/uv) is a very fast Python package installer and resolver, written in Rust.
+
+To install `amen-cli` using uv:
+
+1.  Install uv:
+
+    ```bash
+    pip install uv
+    ```
+
+2.  Install `amen-cli` using uv:
+
+    ```bash
+    uv pip install amen-cli
+    ```
+
+uv utilizes the `pyproject.toml` file for resolving dependencies, ensuring a consistent and reproducible installation.
+
 ### Debian/Ubuntu
 ```bash
 # Install required dependencies
