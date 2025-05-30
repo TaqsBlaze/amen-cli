@@ -1,6 +1,7 @@
 """Template management for different frameworks"""
 
 import os
+import importlib.util
 from pathlib import Path
 from ..frameworks import FRAMEWORKS
 
@@ -114,18 +115,66 @@ if __name__ == "__main__":
     
     def _generate_html_template(self, app_path: Path, app_name: str):
         """Generate HTML template"""
+        # Dynamically import the __init__.py module to get the version
+
+        from .. import __version__
+        version = __version__
+
         template_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{app_name}</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+        }}
+        .container {{
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }}
+        .header {{
+            text-align: center;
+            margin-bottom: 2rem;
+        }}
+        .header h1 {{
+            font-size: 2.5rem;
+            color: #3490dc;
+            margin-bottom: 0.5rem;
+        }}
+        .content {{
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }}
+        .footer {{
+            text-align: center;
+            margin-top: 2rem;
+            color: #718096;
+        }}
+        .footer a {{
+            color: #3490dc;
+            text-decoration: none;
+        }}
+    </style>
 </head>
-<body>
+<body class="bg-gray-100">
     <div class="container">
-        <h1>Welcome to {app_name}!</h1>
-        <p>Your application is running successfully.</p>
+        <header class="header">
+            <h1 class="text-3xl font-semibold">{app_name}</h1>
+            <p class="text-gray-600">Generated with <a href="https://github.com/taqsblaze/amen-cli" class="text-blue-500 hover:underline">Amen CLI</a></p>
+        </header>
+        <div class="content">
+            <p class="text-gray-700">Your application is running successfully.</p>
+        </div>
+        <footer class="footer">
+            <p>&copy; {app_name} - <a href="https://github.com/taqsblaze/amen-cli">Amen CLI v{version}</a></p>
+        </footer>
     </div>
     <script src="/static/js/app.js"></script>
 </body>
