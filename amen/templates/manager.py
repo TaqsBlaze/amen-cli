@@ -1,6 +1,7 @@
 """Template management for different frameworks"""
 
 import os
+import importlib.util
 from pathlib import Path
 from ..frameworks import FRAMEWORKS
 
@@ -11,30 +12,35 @@ class TemplateManager:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding='utf-8')
 
-    def generate_structure(self, app_path: Path, framework: str, app_type: str, app_name: str):
+    def generate_structure(self, app_path: Path, framework: str, app_type: str, app_name: str, database: str):
         """Generate project structure based on framework and app type"""
         
         # Create all necessary directories
         (app_path / app_name).mkdir(exist_ok=True)
         (app_path / app_name / "api").mkdir(exist_ok=True)
         (app_path / app_name / "auth").mkdir(exist_ok=True)
-        (app_path / app_name / "models").mkdir(exist_ok=True)
+        # Only create models directory if using database
+        if database != 'none':
+            (app_path / app_name / "models").mkdir(exist_ok=True)
         (app_path / app_name / "static").mkdir(exist_ok=True)
         (app_path / app_name / "static" / "uploads").mkdir(exist_ok=True)
         (app_path / app_name / "templates").mkdir(exist_ok=True)
-        (app_path / "tests").mkdir(exist_ok=True)  # Create tests directory
+        (app_path / "tests").mkdir(exist_ok=True)
         
-        # Generate framework-specific files
+        # Generate database configuration if needed
+        if database != 'none':
+            self._generate_database_files(app_path, app_name, database)
+            
+        # Generate framework-specific files with database option
         if framework == 'flask':
-            self._generate_flask_files(app_path, app_type, app_name)
+            self._generate_flask_files(app_path, app_type, app_name, database)
         elif framework == 'fastapi':
-            self._generate_fastapi_files(app_path, app_type, app_name)
-        # Add other frameworks as needed
-        
-        # Generate common files
-        self._generate_common_files(app_path, framework, app_name, app_type)
+            self._generate_fastapi_files(app_path, app_type, app_name, database)
+            
+        # Generate common files with database option
+        self._generate_common_files(app_path, framework, app_name, app_type, database)
     
-    def _generate_flask_files(self, app_path: Path, app_type: str, app_name: str):
+    def _generate_flask_files(self, app_path: Path, app_type: str, app_name: str, database: str):
         """Generate Flask files"""
         app_content = f"""from flask import Flask
 from {app_name}.api.endpoints import api_bp
@@ -64,7 +70,7 @@ if __name__ == '__main__':
         self._generate_token_file(app_path, app_name, framework="flask")
         self._generate_endpoints_file(app_path, app_name, framework='flask', app_type=app_type)
     
-    def _generate_fastapi_files(self, app_path: Path, app_type: str, app_name: str):
+    def _generate_fastapi_files(self, app_path: Path, app_type: str, app_name: str, database: str):
         """Generate FastAPI files"""
 
         static_mount = f"app.mount('/static', StaticFiles(directory='{app_name}/static'), name='static')" if app_type == 'webapp' else ""
@@ -109,30 +115,86 @@ if __name__ == "__main__":
     
     def _generate_html_template(self, app_path: Path, app_name: str):
         """Generate HTML template"""
+        # Dynamically import the __init__.py module to get the version
+
+        from .. import __version__
+        version = __version__
+
         template_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{app_name}</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+        }}
+        .container {{
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }}
+        .header {{
+            text-align: center;
+            margin-bottom: 2rem;
+        }}
+        .header h1 {{
+            font-size: 2.5rem;
+            color: #3490dc;
+            margin-bottom: 0.5rem;
+        }}
+        .content {{
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }}
+        .footer {{
+            text-align: center;
+            margin-top: 2rem;
+            color: #718096;
+        }}
+        .footer a {{
+            color: #3490dc;
+            text-decoration: none;
+        }}
+    </style>
 </head>
-<body>
+<body class="bg-gray-100">
     <div class="container">
-        <h1>Welcome to {app_name}!</h1>
-        <p>Your application is running successfully.</p>
+        <header class="header">
+            <h1 class="text-3xl font-semibold">{app_name}</h1>
+            <p class="text-gray-600">Generated with <a href="https://github.com/taqsblaze/amen-cli" class="text-blue-500 hover:underline">Amen CLI</a></p>
+        </header>
+        <div class="content">
+            <p class="text-gray-700">Your application is running successfully.</p>
+        </div>
+        <footer class="footer">
+            <p>&copy; {app_name} - <a href="https://github.com/taqsblaze/amen-cli">Amen CLI v{version}</a></p>
+        </footer>
     </div>
     <script src="/static/js/app.js"></script>
 </body>
 </html>"""
         self._write_file(app_path / app_name / "templates" / "index.html", template_content)
     
-    def _generate_common_files(self, app_path: Path, framework: str, app_name: str, app_type: str):
+    def _generate_common_files(self, app_path: Path, framework: str, app_name: str, app_type: str, database: str):
         """Generate common files for all projects"""
         
         # requirements.txt
         framework_info = FRAMEWORKS[framework]
         requirements = "\n".join(framework_info['packages'])
+        
+        # Add database dependencies only if database is selected
+        if database != 'none':
+            requirements += "\n# Database dependencies"
+            requirements += "\nSQLAlchemy>=2.0.0"
+            if database == 'mysql':
+                requirements += "\nmysqlclient>=2.0.0"
+        
         self._write_file(app_path / "requirements.txt", requirements)
         
         # .env
@@ -140,6 +202,14 @@ if __name__ == "__main__":
 DEBUG=True
 PORT={framework_info['default_port']}
 """
+        # Add database configuration only if database is selected
+        if database != 'none':
+            env_content += f"\n# Database configuration\n"
+            if database == 'sqlite3':
+                env_content += f"DATABASE_URL=sqlite:///./{app_name}.db\n"
+            elif database == 'mysql':
+                env_content += "DATABASE_URL=mysql://user:password@localhost:3306/{app_name}\n"
+        
         self._write_file(app_path / ".env", env_content)
         
         # README.md
@@ -730,6 +800,55 @@ async def protected(current_user: dict = Depends(token_required)):
     return {{"message": "This is a protected route!", "user": current_user}}
 """
         self._write_file(app_path / app_name / "api" / "endpoints.py", endpoints_content)
+
+    def _generate_database_files(self, app_path: Path, app_name: str, database: str):
+        """Generate database configuration files"""
+        db_content = f"""from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SQLALCHEMY_DATABASE_URL = os.getenv('DATABASE_URL', {{
+    'sqlite3': f"'sqlite:///./{app_name}.db'",
+    'mysql': "'mysql://user:password@localhost:3306/{app_name}'",
+}}.get(database))
+
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
+    {{'connect_args={{"check_same_thread": False}}' if database == 'sqlite3' else ''}}
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+"""
+        self._write_file(app_path / app_name / "database.py", db_content)
+
+        # Add example model
+        model_content = """from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.sql import func
+from .database import Base
+
+class Example(Base):
+    __tablename__ = "examples"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(100), index=True)
+    description = Column(String(255))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+"""
+        self._write_file(app_path / app_name / "models" / "example.py", model_content)
 
 # MANIFEST.in - for including non-Python files in the package
 MANIFEST_IN = """

@@ -114,6 +114,17 @@ class AmenCLI:
             validate=lambda x: len(x.strip()) > 0 or "Application name cannot be empty"
         ).ask().strip()
     
+    def select_database(self) -> str:
+        """Select database type"""
+        return questionary.select(
+            "💾 Select a database:",
+            choices=[
+                questionary.Choice("SQLite3 - Lightweight, serverless database", "sqlite3"),
+                questionary.Choice("MySQL - Robust client-server database", "mysql"),
+                questionary.Choice("None - No database", "none"),
+            ]
+        ).ask()
+
     def create_virtual_environment(self, app_path: Path) -> bool:
         """Create virtual environment"""
         venv_path = get_venv_path(app_path)
@@ -181,6 +192,10 @@ class AmenCLI:
             console.print("❌ No application name provided. Exiting.", style="red")
             return
 
+        database = self.select_database()
+        # Remove the exit condition for database selection
+        # Continue with project creation regardless of database choice
+        
         # Create application directory
         app_path = Path.cwd() / app_name
         
@@ -214,7 +229,7 @@ class AmenCLI:
             console=console,
         ) as progress:
             task = progress.add_task("Generating project structure...", total=None)
-            self.template_manager.generate_structure(app_path, framework, app_type, app_name)
+            self.template_manager.generate_structure(app_path, framework, app_type, app_name, database)
             progress.update(task, description="✅ Project structure generated")
 
         # Create .amen_config file
