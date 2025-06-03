@@ -17,6 +17,9 @@ from .editor import edit_file
 
 console = Console()
 
+PACKAGE_CACHE_DIR = Path.home() / ".amen" / "package_cache"
+PACKAGE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
 class PipNetworkError(Exception):
     pass
 
@@ -143,7 +146,34 @@ class AmenCLI:
         except Exception as e:
             console.print(f"❌ Error creating virtual environment: {e}", style="red")
             return False
-    
+
+    def _cache_packages(self, packages: list[str], progress: Progress, task_id: int):
+        """Cache packages to the PACKAGE_CACHE_DIR."""
+        packages_to_cache = []
+        for package in packages:
+            if not (PACKAGE_CACHE_DIR / f"{package}.whl").exists():
+                packages_to_cache.append(package)
+
+        if not packages_to_cache:
+            console.print("✅ All packages already cached.", style="green")
+            return
+
+        try:
+            progress.update(task_id, description="Caching packages...")
+            subprocess.run(
+                [sys.executable, "-m", "pip", "download", "--no-cache-dir", "-d", str(PACKAGE_CACHE_DIR), *packages_to_cache],
+                check=True,
+                capture_output=True
+            )
+            progress.update(task_id, description="✅ Packages cached")
+        except subprocess.CalledProcessError:
+            # Silently ignore caching errors
+            console.print(f"⚠️ Error caching packages (network issue). Proceeding with available cache.", style="yellow")
+            progress.update(task_id, description="⚠️ Error caching packages")
+        except OSError as e:
+            console.print(f"❌ Network error during caching: {e}", style="red")
+            progress.update(task_id, description="❌ Network error during caching")
+
     def install_framework(self, app_path: Path, framework: str) -> bool:
         """Install selected framework in virtual environment"""
         venv_path = get_venv_path(app_path)
@@ -151,22 +181,39 @@ class AmenCLI:
 
         framework_info = FRAMEWORKS[framework]
         packages = framework_info['packages']
-        
+
+        # Check if packages are cached
+        cached_packages = all((PACKAGE_CACHE_DIR / f"{pkg}.whl").exists() for pkg in packages)
+
         try:
             with Progress(
                 SpinnerColumn(),
                 TextColumn("[progress.description]{task.description}"),
                 console=console,
             ) as progress:
-                task = progress.add_task(f"Installing {framework_info['name']}...", total=None)
-                
-                for package in packages:
-                    subprocess.run([
-                        str(pip_path), "install", package
-                    ], check=True, capture_output=True)
-                
-                progress.update(task, description=f"✅ {framework_info['name']} installed")
-            
+                task_id = progress.add_task(f"Installing {framework_info['name']}...", total=None)
+
+                if cached_packages:
+                    console.print("📦 Installing packages from cache...", style="green")
+                else:
+                    try:
+                        self._cache_packages(packages, progress, task_id)
+                    except OSError as e:
+                        console.print(f"⚠️ Could not cache packages due to network error: Installing from available cache.", style="yellow")
+                        if not cached_packages:
+                            console.print("❌ No cached packages found. Installation cannot proceed.", style="red")
+                            return False
+
+                progress.update(task_id, description=f"Installing {framework_info['name']}...")
+                # Install packages from the cache
+                subprocess.run(
+                    [str(pip_path), "install", "--no-index", "--find-links", str(PACKAGE_CACHE_DIR), *packages],
+                    check=True,
+                    capture_output=True
+                )
+
+                progress.update(task_id, description=f"✅ {framework_info['name']} installed")
+
             return True
         except subprocess.CalledProcessError as e:
             console.print(f"❌ Error installing {framework_info['name']}: {e}", style="red")

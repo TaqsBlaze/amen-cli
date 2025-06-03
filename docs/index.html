@@ -57,7 +57,7 @@
       >
       <h1 class="text-4xl font-extrabold text-white tracking-tight mb-2 transition-transform duration-500 hover:scale-105">AMEN CLI Wiki</h1>
       <div class="text-center text-white">
-        <a href="https://pypi.org/project/amen-cli/" class="inline-block px-4 py-2 text-2xl font-bold bg-white/20 rounded-full backdrop-blur-sm border border-white/30 hover:bg-white/30 transition-all duration-300">v0.5.0</a>
+        <a href="https://pypi.org/project/amen-cli/" class="inline-block px-4 py-2 text-2xl font-bold bg-white/20 rounded-full backdrop-blur-sm border border-white/30 hover:bg-white/30 transition-all duration-300">v0.6.0</a>
       </div></div>
       <p class="text-lg text-white text-center">A Laravel-inspired Python Web Application Scaffolding Tool</p>
     </div>
@@ -81,7 +81,38 @@
 
     <section class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
       <h2 class="text-2xl font-bold text-purple-700 mb-4 transition-colors duration-300 hover:text-purple-900">🛠️ Installation</h2>
+      <h3 class="text-xl font-semibold text-purple-600 mb-2">Using pip (All platforms)</h3>
       <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>pip install amen-cli</code></pre>
+
+      <h3 class="text-xl font-semibold text-purple-600 mt-4 mb-2">Using uv</h3>
+      <p class="text-lg">
+        <a href="https://github.com/astral-sh/uv" class="text-indigo-600 hover:underline">uv</a> is a very fast Python package installer and resolver, written in Rust.
+      </p>
+      <ol class="list-decimal list-inside ml-4 text-lg">
+        <li>Install uv:
+          <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>pip install uv</code></pre>
+        </li>
+        <li>Install <code>amen-cli</code> using uv:
+          <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>uv pip install amen-cli</code></pre>
+        </li>
+      </ol>
+      <p class="text-lg">uv utilizes the <code>pyproject.toml</code> file for resolving dependencies, ensuring a consistent and reproducible installation.</p>
+
+      <h3 class="text-xl font-semibold text-purple-600 mt-4 mb-2">Debian/Ubuntu</h3>
+      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Install required dependencies
+sudo apt-get update
+sudo apt-get install python3-pip python3-venv
+
+# Install AMEN CLI
+pip3 install amen-cli
+
+# Optional: Install system-wide (requires root)
+sudo pip3 install amen-cli</code></pre>
+
+      <h3 class="text-xl font-semibold text-purple-600 mt-4 mb-2">Linux Post-Installation</h3>
+      <p class="text-lg">Make sure the amen command is in your PATH:</p>
+      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>export PATH="$HOME/.local/bin:$PATH"</code></pre>
+      <p class="text-lg">Add this line to your ~/.bashrc or ~/.zshrc for permanent effect.</p>
     </section>
 
     <section class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
@@ -89,8 +120,20 @@
       <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Create a new project
 amen create
 
-# Or use flags for automation:
+# You can also use flags to specify the framework, type, and name:
 amen create -f flask -t webapp -n myapp
+
+# Available options:
+# -f, --framework   Framework to use (flask, fastapi, bottle, pyramid)
+# -t, --type        Type of application (webapp, api)
+# -n, --name        Name of the application
+
+# If flags are not provided, the interactive prompts will be used.
+
+# Follow the interactive prompts to:
+# 1. Select a framework
+# 2. Choose application type (webapp/api)
+# 3. Name your project
 </code></pre>
       <div class="mt-4">
         <span class="font-semibold text-gray-700">Flags:</span>
@@ -101,13 +144,18 @@ amen create -f flask -t webapp -n myapp
         </ul>
       </div>
       <div class="mt-4">
-        <span class="font-semibold text-gray-700">Run your app:</span>
-        <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>cd myapp
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
-python run.py
-# Or, from the parent directory:
-amen run myapp
+        <span class="font-semibold text-gray-700">Additional Commands:</span>
+        <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Run your application
+amen run &lt;app_name&gt;
+
+# Run tests for your application
+amen test &lt;app_name&gt;
+
+# Check for updates to the CLI
+amen check-update
+
+# Manage project configuration
+amen config &lt;app_name&gt;
 </code></pre>
       </div>
     </section>
@@ -135,6 +183,18 @@ amen run myapp
 ├── run.py                  # Application runner
 └── README.md               # Project documentation
 </code></pre>
+      <p class="text-lg">
+        - <b>Flask</b>: Uses <code>app.py</code> and registers a blueprint from <code>api/endpoints.py</code>. Token authentication is in <code>auth/token.py</code>.
+      </p>
+      <p class="text-lg">
+        - <b>FastAPI</b>: Uses <code>main.py</code> and includes a router from <code>api/endpoints.py</code>. Token authentication is in <code>auth/token.py</code>.
+      </p>
+      <p class="text-lg">
+        - <b>Webapp</b>: Includes HTML templates and static files. FastAPI mounts static and template directories.
+      </p>
+      <p class="text-lg">
+        - <b>API</b>: Generates only API endpoints and disables template/static mounting.
+      </p>
     </section>
 
     <section class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
@@ -162,7 +222,7 @@ amen run myapp
               <td class="px-4 py-2">8000</td>
               <td class="px-4 py-2 text-green-600 font-bold">✅</td>
             </tr>
-            <tr class="transition-colors duration-300 hover:bg-indigo-50">
+             <tr class="transition-colors duration-300 hover:bg-indigo-50">
               <td class="px-4 py-2">Django</td>
               <td class="px-4 py-2">High-level Python web framework</td>
               <td class="px-4 py-2">8000</td>
@@ -183,6 +243,21 @@ amen run myapp
           </tbody>
         </table>
       </div>
+      <h3 class="text-xl font-semibold text-teal-600 mt-4 mb-2">Work in Progress</h3>
+      <p class="text-lg">Currently implementing support for additional web frameworks:</p>
+      <ul class="list-disc list-inside ml-4 text-lg">
+        <li><b>Bottle</b>: Integration in development</li>
+        <li><b>Pyramid</b>: Initial implementation phase</li>
+      </ul>
+      <p class="text-lg">These frameworks will enable:</p>
+      <ul class="list-disc list-inside ml-4 text-lg">
+        <li>Route mapping and handling</li>
+        <li>Request/response processing</li>
+        <li>Middleware integration</li>
+        <li>Template rendering support</li>
+      </ul>
+      <p class="text-lg">Check back for updates or follow the project's issues for implementation progress. Contributions are welcome!</p>
+      <p class="text-lg"><b>Note</b>: For now, please use our stable implementations for Flask or FastAPI.</p>
     </section>
 
     <section class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
