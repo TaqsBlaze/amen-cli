@@ -2,7 +2,7 @@
 __version__ = "0.7.0"
 __author__ = "Tanaka Chinengundu"
 
-__description__ = "Inspired by the laravel installer, Python Web Application Scaffolding Tool"
+__description__ = "Inspired by the laravel installer, Python Web Application Scaffolding Tool!"
 __license__ = "Modified MIT with Attribution Requirements"
 __copyright__ = "Copyright (c) 2025 Tanaka Chinengundu"
 __email__ = "tanakah30@gmail.com"

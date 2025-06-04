@@ -435,11 +435,12 @@ def check_update():
         response.raise_for_status()
         latest_version = response.json()["info"]["version"]
 
-        current_version = subprocess.run(
+        result = subprocess.run(
             [sys.executable, "-m", "pip", "show", package_name],
             capture_output=True,
             text=True,
-        ).stdout.split("Version: ")[1].splitlines()[0]
+        )
+        current_version = result.stdout.split("Version: ")[1].splitlines()[0]
 
         if current_version == latest_version:
             console.print(f"✅ You are already using the latest version ({current_version}).", style="green")
@@ -447,10 +448,18 @@ def check_update():
             console.print(f"⬆️ New version available: {latest_version} (current: {current_version}).", style="yellow")
             update = questionary.confirm("Do you want to update to the latest version?").ask()
             if update:
-                subprocess.run(
-                    [sys.executable, "-m", "pip", "install", "--use-feature=fast-deps", "--upgrade", "--user", f"{package_name}=={latest_version}"],
-                    check=True,
-                )
+                with Progress(
+                    SpinnerColumn(),
+                    TextColumn("[progress.description]{task.description}"),
+                    console=console,
+                ) as progress:
+                    task = progress.add_task("Installing update...", total=None)
+                    subprocess.run(
+                        [sys.executable, "-m", "pip", "install", "--use-feature=fast-deps", "--upgrade", "--user", f"{package_name}=={latest_version}"],
+                        check=True,
+                        capture_output=True,
+                    )
+                    progress.update(task, description="✅ Update completed")
                 console.print(f"✅ Successfully updated to version {latest_version}.", style="green")
             else:
                 console.print("❌ Update cancelled.", style="red")
