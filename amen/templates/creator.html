@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amen web</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        @keyframes dropdown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .panel-animation {
+            animation: dropdown 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100" style="background-image: url('{{ url_for('static', filename='fallback-bg.png') }}');
+    background-size: cover;
+    backdrop-filter: blur(6px);">
+    <div class="container mx-auto px-4 py-8 h-screen flex items-center justify-center">
+        <div class="w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden bg-opacity-80 bg-white border border-gray-200 panel-animation">
+            <div class="px-8 py-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h1 class="text-3xl font-bold text-gray-800">Amen Web</h1>
+                    <span class="text-sm text-gray-500 border border-white rounded-lg px-4 py-2 ml-4 inline-flex items-center">
+                        v{{ version }}
+                    </span>
+                </div>
+                <form id="projectForm" class="space-y-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Project Name</label>
+                        <input type="text" id="name" name="name" required
+                               class="mt-2 block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+
+                    <div>
+                        <label for="framework" class="block text-sm font-medium text-gray-700">Framework</label>
+                        <select id="framework" name="framework" required
+                                class="mt-2 block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            {% for key, name in frameworks.items() %}
+                            <option value="{{ key }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="type" class="block text-sm font-medium text-gray-700">Project Type</label>
+                        <select id="type" name="type" required
+                                class="mt-2 block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option value="webapp">Web Application</option>
+                            <option value="api">API Only</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="database" class="block text-sm font-medium text-gray-700">Database</label>
+                        <select id="database" name="database"
+                                class="mt-2 block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option value="sqlite3">SQLite3</option>
+                            <option value="mysql">MySQL</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Create Project
+                    </button>
+                </form>
+
+                <div id="status" class="mt-6 hidden">
+                    <div class="flex items-center justify-center">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-container" class="fixed top-4 right-4 z-50 flex flex-col items-end space-y-2 shadow-lg padding-4">
+
+        <!-- Notifications will be added here -->
+    </div>
+
+    <script>
+        document.getElementById('projectForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const status = document.getElementById('status');
+            
+            // Show loading spinner
+            status.classList.remove('hidden');
+            form.classList.add('opacity-50', 'pointer-events-none');
+
+            // Sanitize form data
+            const formData = {
+                name: sanitize(form.name.value),
+                framework: sanitize(form.framework.value),
+                type: sanitize(form.type.value),
+                database: sanitize(form.database.value)
+            };
+
+            try {
+                const response = await fetch('/api/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                showNotification(result.message, result.status === 'success');
+                
+                if (result.status === 'success') {
+                    form.reset();
+                }
+            } catch (error) {
+                showNotification('Error creating project: ' + error.message, false);
+            } finally {
+                status.classList.add('hidden');
+                form.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        });
+
+        // Simple sanitize function (can be improved)
+        function sanitize(string) {
+            return string.replace(/[^a-zA-Z0-9_\-]+/g, '');
+        }
+
+        function showNotification(message, success) {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `bg-${success ? 'green' : 'red'}-100 border-${success ? 'green' : 'red'}-500 text-${success ? 'green' : 'red'}-700 px-4 py-3 rounded relative`;
+            notification.innerHTML = `
+                <strong class="font-bold">${success ? 'Success' : 'Error'}</strong>
+                <span class="block sm:inline">${message}</span>
+                <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                    <i class="fa fa-times cursor-pointer" onclick="this.parentNode.parentNode.remove()"></i>
+                </span>
+            `;
+            container.appendChild(notification);
+
+            // Automatically remove the notification after 5 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 8000);
+        }
+    </script>
+</body>
+</html>
