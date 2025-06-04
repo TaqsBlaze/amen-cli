@@ -96,6 +96,12 @@ amen create -f flask -t webapp -n myapp
 # 1. Select a framework
 # 2. Choose application type (webapp/api)
 # 3. Name your project
+
+# Launch the web interface for project management
+amen web [options]
+
+# Available web interface options:
+# -p, --port       Port to run the web interface on (default: 3000)
 ```
 
 ### Additional Commands
