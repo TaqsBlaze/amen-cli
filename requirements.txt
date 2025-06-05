@@ -4,3 +4,7 @@ questionary>=1.10.0
 virtualenv>=20.0.0
 requests>=2.25.0
 pyyaml>=5.4.0
+bandit>=1.7.0
+black>=22.0.0
+flake8>=3.9.0
+mypy>=0.910

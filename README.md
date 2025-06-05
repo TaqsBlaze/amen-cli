@@ -127,6 +127,23 @@ amen config <app_name>
 
 # Example:
 amen config myapp
+
+# Run a security audit on your application
+amen audit <app_name> [options]
+# Options:
+# -f, --format     Output format (txt, json, csv, xml; default: txt)
+# -s, --severity   Filter issues by severity (low, medium, high)
+# -o, --output     Save audit report to a specified file
+# Example:
+amen audit myapp -s high
+
+# Monitor application status and resource usage in real time
+amen monitor <app_name> [options]
+# Options:
+# -p, --port       Port to monitor
+# -r, --refresh    Refresh rate in seconds (accepts decimal values; default: 0.1)
+# Example:
+amen monitor myapp --port 5000 --refresh 0.5
 ```
 
 ## 🌟 Project Structure
