@@ -4,6 +4,13 @@ import subprocess
 import venv
 from pathlib import Path
 
+import time
+import psutil
+from datetime import datetime
+from rich.live import Live
+from rich.table import Table
+from rich import box
+
 import click
 import questionary
 import requests  
@@ -605,6 +612,84 @@ def web(port):
     except Exception as e:
         console.print(f"❌ Error starting web interface: {e}", style="red")
         console.print("   Make sure Flask is installed in your environment.", style="yellow")
+
+
+@main.command()
+@click.argument("app_name", type=str)
+@click.option("--port", "-p", type=int, help="Port to monitor")
+@click.option("--refresh", "-r", type=float, default=0.1, help="Refresh rate in seconds")
+def monitor(app_name, port, refresh):
+    """Monitor application status and resource usage"""
+    app_path = Path.cwd() / app_name
+
+    if not app_path.exists():
+        console.print(f"❌ Application '{app_name}' not found.", style="red")
+        return
+
+    try:
+        def get_process_info(port):
+            """Get process information for the given port"""
+            for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent']):
+                try:
+                    for conn in proc.net_connections():
+                        if conn.laddr.port == port:
+                            return proc
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    pass
+            return None
+
+        def generate_table(proc):
+            """Generate rich table with monitoring data"""
+            table = Table(
+                title=f"Application Monitor - {app_name}",
+                box=box.ROUNDED,
+                show_header=True,
+                header_style="bold magenta"
+            )
+            
+            table.add_column("Metric", style="cyan")
+            table.add_column("Value", style="green")
+            
+            table.add_row("Time", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+            
+            if proc:
+                table.add_row("Status", "[green]Running[/green]")
+                table.add_row("PID", str(proc.pid))
+                table.add_row("CPU Usage", f"{proc.cpu_percent()}%")
+                table.add_row("Memory Usage", f"{proc.memory_percent():.1f}%")
+                
+                # Add memory details
+                mem_info = proc.memory_info()
+                table.add_row("RSS Memory", f"{mem_info.rss / (1024*1024):.1f} MB")
+                table.add_row("VMS Memory", f"{mem_info.vms / (1024*1024):.1f} MB")
+                
+                # Add thread count
+                table.add_row("Threads", str(proc.num_threads()))
+                
+                # Add open files count
+                try:
+                    table.add_row("Open Files", str(len(proc.open_files())))
+                except (psutil.AccessDenied, psutil.NoSuchProcess):
+                    table.add_row("Open Files", "N/A")
+            else:
+                table.add_row("Status", "[red]Not Running[/red]")
+            
+            return table
+
+        console.print(f"🔍 Monitoring {app_name}...", style="blue")
+        console.print(f"Press Ctrl+C to stop monitoring", style="yellow")
+        
+        with Live(refresh_per_second=1/refresh) as live:
+            while True:
+                proc = get_process_info(port) if port else None
+                live.update(generate_table(proc))
+                time.sleep(refresh)
+
+    except KeyboardInterrupt:
+        console.print("\n✋ Monitoring stopped", style="yellow")
+    except Exception as e:
+        console.print(f"❌ Error: {e}", style="red")
+
 
 if __name__ == "__main__":
     main()
