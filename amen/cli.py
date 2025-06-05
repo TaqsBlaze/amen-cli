@@ -509,6 +509,96 @@ def config(app_name, framework):
     except Exception as e:
         console.print(f"❌ Failed to open .env file: {e}", style="red")
 
+
+@main.command()
+@click.argument("app_name", type=str)
+@click.option(
+    "--format", "-f",
+    type=click.Choice(['txt', 'json', 'csv', 'xml'], case_sensitive=False),
+    default='txt',
+    help="Output format for the security audit report"
+)
+@click.option(
+    "--severity", "-s",
+    type=click.Choice(['low', 'medium', 'high'], case_sensitive=False),
+    help="Filter issues by severity level"
+)
+@click.option(
+    "--output", "-o",
+    type=str,
+    help="Save audit report to specified file"
+)
+def audit(app_name, format, severity, output):
+    """Run security audit on the specified application using bandit."""
+    app_path = Path.cwd() / app_name
+
+    if not app_path.exists() or not app_path.is_dir():
+        console.print(f"❌ Application '{app_name}' not found.", style="red")
+        return
+
+    venv_path = get_venv_path(app_path)
+    if not venv_path.exists() or not venv_path.is_dir():
+        console.print(f"❌ Virtual environment not found for '{app_name}'.", style="red")
+        console.print("   Please create the application using `amen create` first.", style="yellow")
+        return
+
+    # Build bandit command (using globally installed bandit)
+    bandit_cmd = ["bandit", "-r", f"{app_name}"]
+    
+    # Add format option
+    if format != 'txt':
+        bandit_cmd.extend(["-f", format])
+    
+    # Add severity filter
+    if severity:
+        severity_map = {'low': 'l', 'medium': 'm', 'high': 'h'}
+        bandit_cmd.extend(["-ll", severity_map[severity]])
+    
+    # Add output file option
+    if output:
+        bandit_cmd.extend(["-o", output])
+
+    try:
+        console.print(f"🔍 Running security audit for '{app_name}'...", style="blue")
+        
+        # Run bandit
+        result = subprocess.run(
+            bandit_cmd,
+            cwd=str(app_path),
+            capture_output=True,
+            text=True
+        )
+        
+        # Bandit returns exit code 1 when issues are found, which is normal
+        if result.returncode == 0:
+            console.print(f"✅ Security audit completed - No issues found!", style="green")
+        elif result.returncode == 1:
+            console.print(f"⚠️  Security audit completed - Issues found:", style="yellow")
+        else:
+            console.print(f"❌ Security audit failed with exit code {result.returncode}", style="red")
+            if result.stderr:
+                console.print(f"Error: {result.stderr}", style="red")
+            return
+        
+        # Display results
+        if not output:
+            if result.stdout:
+                console.print("\n" + "="*60)
+                console.print("SECURITY AUDIT REPORT", style="bold blue")
+                console.print("="*60)
+                console.print(result.stdout)
+            if result.stderr and result.returncode != 1:
+                console.print("\nWarnings/Errors:", style="yellow")
+                console.print(result.stderr)
+        else:
+            console.print(f"📄 Audit report saved to: {output}", style="green")
+            
+    except FileNotFoundError as e:
+        console.print(f"❌ Error: {e}. Make sure bandit is properly installed.", style="red")
+    except subprocess.CalledProcessError as e:
+        console.print(f"❌ Security audit failed: {e}", style="red")
+
+
 @main.command()
 @click.option('--port', '-p', default=5050, help='Port to run the web interface on')
 def web(port):

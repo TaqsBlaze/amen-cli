@@ -21,6 +21,7 @@ setup(
         "virtualenv>=20.0.0",
         "requests>=2.25.0",
         "pyyaml>=5.4.0",
+        "bandit>=1.7.0",
     ],
     entry_points={
         'console_scripts': [
