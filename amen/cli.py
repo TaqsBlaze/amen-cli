@@ -425,7 +425,7 @@ def test(app_name):
         console.print(f"❌ Error: {e}. Make sure pytest is installed in the virtual environment.", style="red")
 
 @main.command()
-def check_update():
+def update():
     """Check for a new version on PyPI and upgrade the package."""
     package_name = "amen-cli"
     console.print(f"🔍 Checking for updates for '{package_name}'...", style="blue")
