@@ -9,6 +9,7 @@
 [![GitHub Contributors](https://img.shields.io/github/contributors/TaqsBlaze/amen-cli)](https://github.com/TaqsBlaze/amen-cli/graphs/contributors)
 [![GitHub Code Size](https://img.shields.io/github/languages/code-size/TaqsBlaze/amen-cli)](https://github.com/TaqsBlaze/amen-cli)
 [![GitHub Repo Size](https://img.shields.io/github/repo-size/TaqsBlaze/amen-cli)](https://github.com/TaqsBlaze/amen-cli)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/amen-cli)](https://pypi.org/project/amen-cli/)
 
 A laravel installer inspired Python Web Application Scaffolding Tool that helps you create web applications with ease!
 
