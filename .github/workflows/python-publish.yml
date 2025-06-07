@@ -35,12 +35,13 @@ jobs:
           python -m pip install build twine
           python -m build
           python -m twine check dist/*
+          # python -m twine upload dist/* --skip-existing
 
       - name: Upload distributions
         uses: actions/upload-artifact@v4
         with:
           name: release-dists
-          path: dist/
+          path: dist/*
 
   pypi-publish:
     runs-on: ubuntu-latest
