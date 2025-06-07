@@ -1,12 +1,19 @@
 import os
-import tkinter as tk
-from tkinter import filedialog, messagebox
+try:
+    import tkinter as tk
+    from tkinter import filedialog, messagebox
+except:
+    pass 
 
 def edit_file(file_path):
     """
     A simple text editor using Tkinter.
     """
-    root = tk.Tk()
+    try:
+        root = tk.Tk()
+    except:
+        pass
+    
     root.title("Ring Editor")
     
     text_area = tk.Text(root, wrap=tk.WORD)

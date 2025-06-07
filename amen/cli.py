@@ -3,7 +3,7 @@ import sys
 import subprocess
 import venv
 from pathlib import Path
-
+import re
 import time
 import psutil
 from datetime import datetime
@@ -85,7 +85,7 @@ class AmenCLI:
         """Display welcome banner"""
         from . import __version__
         console.print(Panel.fit(
-            f"""AMEN: inspired by the laravel installer, a python Web Framework Scaffolding
+            f"""AMEN: inspired by the laravel installer, a python Web Application Scaffolding
         Create your web applications with ease!
         By [bold magenta]Tanaka Chinengundu[/bold magenta]
         [bold blue]Version: {__version__}[/bold blue]
@@ -523,7 +523,7 @@ def config(app_name, framework):
 )
 @click.option(
     "--severity", "-s",
-    type=click.Choice(['low', 'medium', 'high'], case_sensitive=False),
+    type=click.Choice(['low','l','m','h', 'medium', 'high'], case_sensitive=False),
     help="Filter issues by severity level"
 )
 @click.option(
@@ -546,7 +546,7 @@ def audit(app_name, format, severity, output):
         return
 
     # Build bandit command (using globally installed bandit)
-    bandit_cmd = ["bandit", "-r", f"{app_name}"]
+    bandit_cmd = ["bandit", "-r", str(app_path)]  # Pass the full path to bandit
     
     # Add format option
     if format != 'txt':
@@ -555,7 +555,7 @@ def audit(app_name, format, severity, output):
     # Add severity filter
     if severity:
         severity_map = {'low': 'l', 'medium': 'm', 'high': 'h'}
-        bandit_cmd.extend(["-ll", severity_map[severity]])
+        bandit_cmd.extend(["--severity-level", severity_map[severity]])
     
     # Add output file option
     if output:
@@ -586,9 +586,6 @@ def audit(app_name, format, severity, output):
         # Display results
         if not output:
             if result.stdout:
-                console.print("\n" + "="*60)
-                console.print("SECURITY AUDIT REPORT", style="bold blue")
-                console.print("="*60)
                 console.print(result.stdout)
             if result.stderr and result.returncode != 1:
                 console.print("\nWarnings/Errors:", style="yellow")
@@ -600,7 +597,6 @@ def audit(app_name, format, severity, output):
         console.print(f"❌ Error: {e}. Make sure bandit is properly installed.", style="red")
     except subprocess.CalledProcessError as e:
         console.print(f"❌ Security audit failed: {e}", style="red")
-
 
 @main.command()
 @click.option('--port', '-p', default=5050, help='Port to run the web interface on')
