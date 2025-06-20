@@ -6,7 +6,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="amen-cli",
-    version="0.8.1",
+    version="0.8.2",
     author="Tanaka Chinengundu",
     author_email="tanakah30@gmail.com",
     description="composer-inspired Python web framework scaffolding tool",
@@ -22,14 +22,12 @@ setup(
         "requests>=2.25.0",
         "pyyaml>=5.4.0",
         "bandit>=1.7.0",
-        "venv>=0.6.0",
         "pathlib>=1.0.0",
         "psutil>=5.6.0",
         "rich>=0.1.0",
         "colorama>=0.4.4",
         "tabulate>=0.8.9",
-        "questionary>=1.10.0",
-        "httpx>=0.18.0",
+        "questionary>=1.10.0"
     ],
     entry_points={
         'console_scripts': [

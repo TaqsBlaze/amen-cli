@@ -353,8 +353,10 @@ pytest --cov
         Inspired by Laravel's elegant development experience
       </p>
     </section>
+    
   </main>
-
+  <!-- Chatbot Preview -->
+  
   <script>
     // Function to format large numbers
     function formatNumber(num) {
@@ -413,7 +415,7 @@ pytest --cov
         
       } catch (error) {
         console.error('Error fetching PyPI stats:', error);
-        document.getElementById('pypi-version').textContent = 'v0.8.1';
+        document.getElementById('pypi-version').textContent = 'v0.8.2';
         document.getElementById('pypi-downloads').textContent = '--';
         document.getElementById('pypi-version').classList.remove('pulse-loading');
         document.getElementById('pypi-downloads').classList.remove('pulse-loading');
@@ -432,6 +434,7 @@ pytest --cov
       fetchPyPIStats();
     }, 300000); // 5 minutes
   </script>
+       
   <footer class="bg-gradient-to-r from-indigo-600 to-purple-600 py-6 mt-10 relative z-10">
     <div class="container mx-auto text-center text-white text-lg font-semibold">
       Made with <span class="text-pink-400">❤️</span> by Tanaka Chinengundu

@@ -8,3 +8,4 @@ bandit>=1.7.0
 black>=22.0.0
 flake8>=3.9.0
 mypy>=0.910
+psutil
