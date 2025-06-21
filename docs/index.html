@@ -182,17 +182,54 @@ amen create -f flask -t webapp -n myapp
       </div>
       <div class="mt-4">
         <span class="font-semibold text-gray-700">Additional Commands:</span>
+        <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Launch the web interface for project management
+amen web [options]
+
+# Available web interface options:
+# -p, --port       Port to run the web interface on (default: 3000)
+</code></pre>
+      </div>
+      <div class="mt-4">
+        <span class="font-semibold text-gray-700">Additional Commands:</span>
         <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Run your application
 amen run &lt;app_name&gt;
+
+# Example:
+amen run myapp
 
 # Run tests for your application
 amen test &lt;app_name&gt;
 
+# Example:
+amen test myapp
+
 # Check for updates to the CLI
-amen check-update
+amen update
 
 # Manage project configuration
 amen config &lt;app_name&gt;
+
+# Example:
+amen config myapp
+
+# Run a security audit on your application
+amen audit &lt;app_name&gt; [options]
+# Options:
+# -f, --format     Output format (txt, json, csv, xml; default: txt)
+# -s, --severity   Filter issues by severity (low, medium, high)
+# -o, --output     Save audit report to a specified file
+# Example:
+amen audit myapp -s high
+
+# Monitor application status and resource usage in real time
+amen monitor &lt;app_name&gt; [options]
+# Options:
+# -p, --port       Port to monitor
+# -r, --refresh    Refresh rate in seconds (accepts decimal values; default: 0.1)
+# --web            Run a web based monitor
+# Example:
+amen monitor myapp --port 5000 --refresh 0.5
+amen monitor myapp --port 5000 -refresh 0.5 --web #Web based monitor
 </code></pre>
       </div>
     </section>
@@ -309,7 +346,7 @@ amen run &lt;app_name&gt;
 amen test &lt;app_name&gt;
 
 # Check for updates
-amen check-update
+amen update
 
 # Manage project configuration
 amen config &lt;app_name&gt;
