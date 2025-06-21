@@ -614,13 +614,19 @@ def web(port):
 @click.argument("app_name", type=str)
 @click.option("--port", "-p", type=int, help="Port to monitor")
 @click.option("--refresh", "-r", type=float, default=0.1, help="Refresh rate in seconds")
-def monitor(app_name, port, refresh):
+@click.option("--web", is_flag=True, help="Run web-based monitor")
+def monitor(app_name, port, refresh, web):
     """Monitor application status and resource usage"""
     app_path = Path.cwd() / app_name
 
     if not app_path.exists():
         console.print(f"❌ Application '{app_name}' not found.", style="red")
         return
+
+    if web:
+        from .monitor_web import run_monitor_web
+        run_monitor_web(app_name=app_name, port=port, refresh=refresh)
+
 
     try:
         def get_process_info(port):

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Monitor - {{ app_name }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-8">
+        <h1 class="text-3xl font-semibold text-gray-800 mb-4">Application Monitor - {{ app_name }}</h1>
+        
+        <div class="bg-white shadow rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-medium text-gray-700 mb-4">Update Interval</h2>
+            <div class="flex items-center">
+                <label for="interval" class="mr-2 text-gray-700">Interval (seconds):</label>
+                <input type="number" id="interval" value="1" min="0.1" step="0.1" class="shadow appearance-none border rounded w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <button id="applyInterval" class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Apply</button>
+            </div>
+        </div>
+        
+        <div class="bg-white shadow rounded-lg p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-medium text-gray-700">Status</h2>
+                <span id="status" class="text-gray-600">Loading...</span>
+            </div>
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-medium text-gray-700">PID</h2>
+                <span id="pid" class="text-gray-600">Loading...</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white shadow rounded-lg p-6">
+                <h2 class="text-xl font-medium text-gray-700 mb-4">CPU Usage</h2>
+                <p class="text-gray-600">
+                    <strong class="font-medium">Current:</strong>
+                    <span id="cpu-usage" >Loading...</span>
+                </p>
+                <canvas id="cpuChart" width="400" height="200"></canvas>
+            </div>
+
+            <div class="bg-white shadow rounded-lg p-6">
+                <h2 class="text-xl font-medium text-gray-700 mb-4">Memory Usage</h2>
+                 <p class="text-gray-600">
+                    <strong class="font-medium">Current:</strong>
+                    <span id="memory-usage">Loading...</span>
+                </p>
+                <canvas id="memoryChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+        
+       
+
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-xl font-medium text-gray-700 mb-4">Detailed Stats</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-gray-600"><strong class="font-medium">RSS Memory:</strong> <span id="rss-memory">Loading...</span></p>
+                    <p class="text-gray-600"><strong class="font-medium">VMS Memory:</strong> <span id="vms-memory">Loading...</span></p>
+                </div>
+                <div>
+                    <p class="text-gray-600"><strong class="font-medium">Threads:</strong> <span id="threads">Loading...</span></p>
+                    <p class="text-gray-600"><strong class="font-medium">Open Files:</strong> <span id="open-files">Loading...</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var cpuChart = new Chart(document.getElementById('cpuChart'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'CPU Usage (%)',
+                    data: [],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        var memoryChart = new Chart(document.getElementById('memoryChart'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Memory Usage (%)',
+                    data: [],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        let updateInterval = 1000; // Default interval
+
+        function updateData() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('status').textContent = data.status;
+                    document.getElementById('pid').textContent = data.pid;
+                    document.getElementById('cpu-usage').textContent = data.cpu_usage + '%';
+                    document.getElementById('memory-usage').textContent = data.memory_usage + '%';
+                    document.getElementById('rss-memory').textContent = data.rss_memory + ' MB';
+                    document.getElementById('vms-memory').textContent = data.vms_memory + ' MB';
+                    document.getElementById('threads').textContent = data.threads;
+                    document.getElementById('open-files').textContent = data.open_files;
+
+                    cpuChart.data.labels.push(data.time);
+                    cpuChart.data.datasets[0].data.push(data.cpu_usage);
+                    memoryChart.data.labels.push(data.time);
+                    memoryChart.data.datasets[0].data.push(data.memory_usage);
+
+                    if (cpuChart.data.labels.length > 20) {
+                        cpuChart.data.labels.shift();
+                        cpuChart.data.datasets[0].data.shift();
+                        memoryChart.data.labels.shift();
+                        memoryChart.data.datasets[0].data.shift();
+                    }
+
+                    cpuChart.update();
+                    memoryChart.update();
+                });
+        }
+
+        let intervalId = setInterval(updateData, updateInterval);
+
+        document.getElementById('applyInterval').addEventListener('click', function() {
+            const newInterval = parseFloat(document.getElementById('interval').value);
+            if (newInterval >= 0.1) {
+                updateInterval = newInterval * 1000;
+                clearInterval(intervalId);
+                intervalId = setInterval(updateData, updateInterval);
+            } else {
+                alert('Interval must be at least 0.1 seconds.');
+            }
+        });
+    </script>
+</body>
+</html>
