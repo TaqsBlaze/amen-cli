@@ -143,8 +143,10 @@ amen monitor <app_name> [options]
 # Options:
 # -p, --port       Port to monitor
 # -r, --refresh    Refresh rate in seconds (accepts decimal values; default: 0.1)
+# --web            Run a web based monitor
 # Example:
 amen monitor myapp --port 5000 --refresh 0.5
+amen monitor myapp --port 5000 -refresh 0.5 --web #Web based monitor
 ```
 
 ## 🌟 Project Structure
