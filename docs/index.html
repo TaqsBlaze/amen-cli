@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>AMEN CLI Wiki</title>
@@ -13,19 +14,37 @@
       .animate-spin-slow {
         animation: spin 4s linear infinite;
       }
+
       .animate-fade-in {
         animation: fadeIn 1.2s ease-in;
       }
+
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(30px);}
-        to { opacity: 1; transform: translateY(0);}
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
+
       .animate-slide-up {
-        animation: slideUp 1s cubic-bezier(0.4,0,0.2,1);
+        animation: slideUp 1s cubic-bezier(0.4, 0, 0.2, 1);
       }
+
       @keyframes slideUp {
-        from { opacity: 0; transform: translateY(40px);}
-        to { opacity: 1; transform: translateY(0);}
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
     }
 
@@ -36,88 +55,100 @@
       opacity: 1;
       z-index: 0;
     }
+
     .section-overlay {
-      background: rgba(255,255,255,0.85);
+      background: rgba(255, 255, 255, 0.85);
       border-radius: 1.5rem;
       box-shadow: 0 6px 32px 0 rgba(80, 80, 180, 0.08);
       z-index: 1;
     }
   </style>
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZLCPR8KK7W"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZLCPR8KK7W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-  gtag('config', 'G-ZLCPR8KK7W');
-</script>
+    gtag('config', 'G-ZLCPR8KK7W');
+  </script>
 </head>
+
 <body class="bg-gradient-to-br from-indigo-100 via-white to-purple-100 min-h-screen text-gray-800 relative">
   <!-- Fixed background image overlay -->
   <div class="fixed inset-0 bg-fixed-overlay pointer-events-none"></div>
   <header class="bg-gradient-to-r from-indigo-600 to-purple-600 py-8 shadow-lg relative z-10 animate-fade-in">
     <div class="container mx-auto flex flex-col items-center">
-      <img
-        style="border-radius: 100%;"
-        src="https://raw.githubusercontent.com/TaqsBlaze/amen-cli/refs/heads/main/image/icon.png"
-        alt="AMEN CLI"
-        class="w-16 h-16 mb-2 transition-transform duration-700 hover:scale-110 hover:rotate-12 animate-spin-slow"
-      >
-      <h1 class="text-4xl font-extrabold text-white tracking-tight mb-2 transition-transform duration-500 hover:scale-105">AMEN CLI Wiki</h1>
-      
+      <img style="border-radius: 100%;"
+        src="https://raw.githubusercontent.com/TaqsBlaze/amen-cli/refs/heads/main/image/icon.png" alt="AMEN CLI"
+        class="w-16 h-16 mb-2 transition-transform duration-700 hover:scale-110 hover:rotate-12 animate-spin-slow">
+      <h1
+        class="text-4xl font-extrabold text-white tracking-tight mb-2 transition-transform duration-500 hover:scale-105">
+        AMEN CLI Wiki</h1>
+
       <div class="flex gap-4 mb-4">
         <!-- GitHub Stars -->
-        <a href="https://github.com/TaqsBlaze/amen-cli" 
-           class="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full backdrop-blur-sm border border-white/30 hover:bg-white/30 transition-all duration-300 text-white group">
-          <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/>
+        <a href="https://github.com/TaqsBlaze/amen-cli"
+          class="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full backdrop-blur-sm border border-white/30 hover:bg-white/30 transition-all duration-300 text-white group">
+          <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 16 16"
+            fill="currentColor">
+            <path
+              d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z" />
           </svg>
           <span id="github-stars" class="font-semibold pulse-loading">--</span>
           <span class="text-sm opacity-80">stars</span>
         </a>
-        
+
         <!-- PyPI Downloads -->
-        <a href="https://pypi.org/project/amen-cli" 
-           class="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full backdrop-blur-sm border border-white/30 hover:bg-white/30 transition-all duration-300 text-white group">
-          <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+        <a href="https://pypi.org/project/amen-cli"
+          class="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full backdrop-blur-sm border border-white/30 hover:bg-white/30 transition-all duration-300 text-white group">
+          <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 16 16"
+            fill="currentColor">
+            <path
+              d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+            <path
+              d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
           </svg>
           <span id="pypi-downloads" class="font-semibold pulse-loading">--</span>
           <span class="text-sm opacity-80">downloads/month</span>
         </a>
-        
+
         <!-- GitHub Repository Link -->
-        <a href="https://github.com/TaqsBlaze/amen-cli" 
-           class="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full backdrop-blur-sm border border-white/30 hover:bg-white/30 transition-all duration-300 text-white group">
-          <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+        <a href="https://github.com/TaqsBlaze/amen-cli"
+          class="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full backdrop-blur-sm border border-white/30 hover:bg-white/30 transition-all duration-300 text-white group">
+          <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 16 16"
+            fill="currentColor">
+            <path
+              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
           </svg>
           <span class="text-sm font-semibold">GitHub</span>
         </a>
       </div>
-      
+
       <div class="text-center text-white mb-2">
-        <a href="https://pypi.org/project/amen-cli/" 
-           class="inline-block px-6 py-3 text-2xl font-bold bg-white/20 rounded-full backdrop-blur-sm border border-white/30 hover:bg-white/30 transition-all duration-300 hover:scale-105">
+        <a href="https://pypi.org/project/amen-cli/"
+          class="inline-block px-6 py-3 text-2xl font-bold bg-white/20 rounded-full backdrop-blur-sm border border-white/30 hover:bg-white/30 transition-all duration-300 hover:scale-105">
           <span id="pypi-version" class="pulse-loading">v--</span>
         </a>
       </div>
-      
+
       <p class="text-lg text-white text-center max-w-2xl">A Laravel-inspired Python Web Application Scaffolding Tool</p>
     </div>
   </header>
 
   <main class="container mx-auto px-4 py-10 relative z-10">
-    <section class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
-      <h2 class="text-2xl font-bold text-indigo-700 mb-4 transition-colors duration-300 hover:text-indigo-900">✨ Features</h2>
+    <section
+      class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-indigo-700 mb-4 transition-colors duration-300 hover:text-indigo-900">✨
+        Features</h2>
       <ul class="list-disc list-inside space-y-1 text-lg">
         <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Interactive project setup wizard</li>
-        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Multiple framework support: Flask, FastAPI, Bottle (WIP), Pyramid (WIP)</li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Multiple framework support: Flask,
+          FastAPI, Bottle (WIP), Pyramid (WIP)</li>
         <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Modular project structure</li>
         <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Webapp and API templates</li>
-        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Automatic virtual environment setup</li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Automatic virtual environment setup
+        </li>
         <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Dependency management</li>
         <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Test scaffolding with pytest</li>
         <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Update checker for the CLI</li>
@@ -125,27 +156,35 @@
       </ul>
     </section>
 
-    <section class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
-      <h2 class="text-2xl font-bold text-purple-700 mb-4 transition-colors duration-300 hover:text-purple-900">🛠️ Installation</h2>
+    <section
+      class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-purple-700 mb-4 transition-colors duration-300 hover:text-purple-900">🛠️
+        Installation</h2>
       <h3 class="text-xl font-semibold text-purple-600 mb-2">Using pip (All platforms)</h3>
-      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>pip install amen-cli</code></pre>
+      <pre
+        class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>pip install amen-cli</code></pre>
 
       <h3 class="text-xl font-semibold text-purple-600 mt-4 mb-2">Using uv</h3>
       <p class="text-lg">
-        <a href="https://github.com/astral-sh/uv" class="text-indigo-600 hover:underline">uv</a> is a very fast Python package installer and resolver, written in Rust.
+        <a href="https://github.com/astral-sh/uv" class="text-indigo-600 hover:underline">uv</a> is a very fast Python
+        package installer and resolver, written in Rust.
       </p>
       <ol class="list-decimal list-inside ml-4 text-lg">
         <li>Install uv:
-          <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>pip install uv</code></pre>
+          <pre
+            class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>pip install uv</code></pre>
         </li>
         <li>Install <code>amen-cli</code> using uv:
-          <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>uv pip install amen-cli</code></pre>
+          <pre
+            class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>uv pip install amen-cli</code></pre>
         </li>
       </ol>
-      <p class="text-lg">uv utilizes the <code>pyproject.toml</code> file for resolving dependencies, ensuring a consistent and reproducible installation.</p>
+      <p class="text-lg">uv utilizes the <code>pyproject.toml</code> file for resolving dependencies, ensuring a
+        consistent and reproducible installation.</p>
 
       <h3 class="text-xl font-semibold text-purple-600 mt-4 mb-2">Debian/Ubuntu</h3>
-      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Install required dependencies
+      <pre
+        class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Install required dependencies
 sudo apt-get update
 sudo apt-get install python3-pip python3-venv
 
@@ -157,13 +196,17 @@ sudo pip3 install amen-cli</code></pre>
 
       <h3 class="text-xl font-semibold text-purple-600 mt-4 mb-2">Linux Post-Installation</h3>
       <p class="text-lg">Make sure the amen command is in your PATH:</p>
-      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>export PATH="$HOME/.local/bin:$PATH"</code></pre>
+      <pre
+        class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>export PATH="$HOME/.local/bin:$PATH"</code></pre>
       <p class="text-lg">Add this line to your ~/.bashrc or ~/.zshrc for permanent effect.</p>
     </section>
 
-    <section class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
-      <h2 class="text-2xl font-bold text-pink-700 mb-4 transition-colors duration-300 hover:text-pink-900">🚀 Quick Start</h2>
-      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Create a new project
+    <section
+      class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-pink-700 mb-4 transition-colors duration-300 hover:text-pink-900">🚀 Quick
+        Start</h2>
+      <pre
+        class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Create a new project
 amen create
 
 # You can also use flags to specify the framework, type, and name:
@@ -184,14 +227,15 @@ amen create -f flask -t webapp -n myapp
       <div class="mt-4">
         <span class="font-semibold text-gray-700">Flags:</span>
         <ul class="list-disc list-inside ml-4">
-          <li><code>-f, --framework</code>   Framework (flask, fastapi, bottle, pyramid)</li>
-          <li><code>-t, --type</code>        Application type (webapp, api)</li>
-          <li><code>-n, --name</code>        Project name</li>
+          <li><code>-f, --framework</code> Framework (flask, fastapi, bottle, pyramid)</li>
+          <li><code>-t, --type</code> Application type (webapp, api)</li>
+          <li><code>-n, --name</code> Project name</li>
         </ul>
       </div>
       <div class="mt-4">
         <span class="font-semibold text-gray-700">Additional Commands:</span>
-        <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Launch the web interface for project management
+        <pre
+          class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Launch the web interface for project management
 amen web [options]
 
 # Available web interface options:
@@ -200,7 +244,8 @@ amen web [options]
       </div>
       <div class="mt-4">
         <span class="font-semibold text-gray-700">Additional Commands:</span>
-        <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Run your application
+        <pre
+          class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Run your application
 amen run &lt;app_name&gt;
 
 # Example:
@@ -243,8 +288,10 @@ amen monitor myapp --port 5000 -refresh 0.5 --web #Web based monitor
       </div>
     </section>
 
-    <section class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
-      <h2 class="text-2xl font-bold text-blue-700 mb-4 transition-colors duration-300 hover:text-blue-900">🏗️ Project Structure</h2>
+    <section
+      class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-blue-700 mb-4 transition-colors duration-300 hover:text-blue-900">🏗️ Project
+        Structure</h2>
       <pre class="bg-gray-900 text-blue-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>your-app/
 ├── venv/                   # Virtual environment
 ├── your-app/               # Main application package
@@ -267,10 +314,12 @@ amen monitor myapp --port 5000 -refresh 0.5 --web #Web based monitor
 └── README.md               # Project documentation
 </code></pre>
       <p class="text-lg">
-        - <b>Flask</b>: Uses <code>app.py</code> and registers a blueprint from <code>api/endpoints.py</code>. Token authentication is in <code>auth/token.py</code>.
+        - <b>Flask</b>: Uses <code>app.py</code> and registers a blueprint from <code>api/endpoints.py</code>. Token
+        authentication is in <code>auth/token.py</code>.
       </p>
       <p class="text-lg">
-        - <b>FastAPI</b>: Uses <code>main.py</code> and includes a router from <code>api/endpoints.py</code>. Token authentication is in <code>auth/token.py</code>.
+        - <b>FastAPI</b>: Uses <code>main.py</code> and includes a router from <code>api/endpoints.py</code>. Token
+        authentication is in <code>auth/token.py</code>.
       </p>
       <p class="text-lg">
         - <b>Webapp</b>: Includes HTML templates and static files. FastAPI mounts static and template directories.
@@ -280,8 +329,10 @@ amen monitor myapp --port 5000 -refresh 0.5 --web #Web based monitor
       </p>
     </section>
 
-    <section class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
-      <h2 class="text-2xl font-bold text-teal-700 mb-4 transition-colors duration-300 hover:text-teal-900">🎯 Framework Support</h2>
+    <section
+      class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-teal-700 mb-4 transition-colors duration-300 hover:text-teal-900">🎯 Framework
+        Support</h2>
       <div class="overflow-x-auto">
         <table class="min-w-full bg-white rounded shadow transition-shadow duration-300 hover:shadow-xl">
           <thead>
@@ -305,7 +356,7 @@ amen monitor myapp --port 5000 -refresh 0.5 --web #Web based monitor
               <td class="px-4 py-2">8000</td>
               <td class="px-4 py-2 text-green-600 font-bold">✅</td>
             </tr>
-             <tr class="transition-colors duration-300 hover:bg-indigo-50">
+            <tr class="transition-colors duration-300 hover:bg-indigo-50">
               <td class="px-4 py-2">Django</td>
               <td class="px-4 py-2">High-level Python web framework</td>
               <td class="px-4 py-2">8000</td>
@@ -339,13 +390,17 @@ amen monitor myapp --port 5000 -refresh 0.5 --web #Web based monitor
         <li>Middleware integration</li>
         <li>Template rendering support</li>
       </ul>
-      <p class="text-lg">Check back for updates or follow the project's issues for implementation progress. Contributions are welcome!</p>
+      <p class="text-lg">Check back for updates or follow the project's issues for implementation progress.
+        Contributions are welcome!</p>
       <p class="text-lg"><b>Note</b>: For now, please use our stable implementations for Flask or FastAPI.</p>
     </section>
 
-    <section class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
-      <h2 class="text-2xl font-bold text-orange-700 mb-4 transition-colors duration-300 hover:text-orange-900">📖 Usage</h2>
-      <pre class="bg-gray-900 text-orange-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Create a new project
+    <section
+      class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-orange-700 mb-4 transition-colors duration-300 hover:text-orange-900">📖 Usage
+      </h2>
+      <pre
+        class="bg-gray-900 text-orange-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Create a new project
 amen create
 
 # Run your application
@@ -362,9 +417,12 @@ amen config &lt;app_name&gt;
 </code></pre>
     </section>
 
-    <section class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
-      <h2 class="text-2xl font-bold text-green-700 mb-4 transition-colors duration-300 hover:text-green-900">🔧 Development</h2>
-      <pre class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>git clone https://github.com/taqsblaze/amen-cli.git
+    <section
+      class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-green-700 mb-4 transition-colors duration-300 hover:text-green-900">🔧
+        Development</h2>
+      <pre
+        class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>git clone https://github.com/taqsblaze/amen-cli.git
 pip install -e .
 pip install pytest pytest-cov
 pytest
@@ -372,37 +430,53 @@ pytest --cov
 </code></pre>
     </section>
 
-    <section class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
-      <h2 class="text-2xl font-bold text-indigo-700 mb-4 transition-colors duration-300 hover:text-indigo-900">🤝 Contributing</h2>
+    <section
+      class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-indigo-700 mb-4 transition-colors duration-300 hover:text-indigo-900">🤝
+        Contributing</h2>
       <ol class="list-decimal list-inside ml-4 text-lg">
         <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Fork the repository</li>
-        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Create your feature branch: <code>git checkout -b feature/amazing-feature</code></li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Create your feature branch:
+          <code>git checkout -b feature/amazing-feature</code></li>
         <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Make your changes</li>
-        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Push to the branch: <code>git push origin feature/amazing-feature</code></li>
+        <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Push to the branch:
+          <code>git push origin feature/amazing-feature</code></li>
         <li class="transition-all duration-300 hover:pl-4 hover:text-indigo-600">Open a Pull Request</li>
       </ol>
     </section>
 
-    <section class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
-      <h2 class="text-2xl font-bold text-pink-700 mb-4 transition-colors duration-300 hover:text-pink-900">👥 Contact & Support</h2>
+    <section
+      class="mb-10 section-overlay p-8 animate-fade-in transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-pink-700 mb-4 transition-colors duration-300 hover:text-pink-900">👥 Contact &
+        Support</h2>
       <ul class="list-disc list-inside ml-4 text-lg">
-        <li>🌐 <a href="https://github.com/taqsblaze/amen-cli" class="text-indigo-600 hover:underline hover:text-indigo-900 transition-colors duration-300">GitHub Repository</a></li>
-        <li>🐛 <a href="https://github.com/taqsblaze/amen-cli/issues" class="text-indigo-600 hover:underline hover:text-indigo-900 transition-colors duration-300">Issue Tracker</a></li>
-        <li>📧 <a href="mailto:tanakah30@gmail.com" class="text-indigo-600 hover:underline hover:text-indigo-900 transition-colors duration-300">Send Email</a></li>
+        <li>🌐 <a href="https://github.com/taqsblaze/amen-cli"
+            class="text-indigo-600 hover:underline hover:text-indigo-900 transition-colors duration-300">GitHub
+            Repository</a></li>
+        <li>🐛 <a href="https://github.com/taqsblaze/amen-cli/issues"
+            class="text-indigo-600 hover:underline hover:text-indigo-900 transition-colors duration-300">Issue
+            Tracker</a></li>
+        <li>📧 <a href="mailto:tanakah30@gmail.com"
+            class="text-indigo-600 hover:underline hover:text-indigo-900 transition-colors duration-300">Send Email</a>
+        </li>
       </ul>
     </section>
 
-    <section class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
-      <h2 class="text-2xl font-bold text-blue-700 mb-4 transition-colors duration-300 hover:text-blue-900">⭐ Credits</h2>
+    <section
+      class="mb-10 section-overlay p-8 animate-slide-up transition-transform duration-500 hover:scale-[1.025] hover:shadow-2xl">
+      <h2 class="text-2xl font-bold text-blue-700 mb-4 transition-colors duration-300 hover:text-blue-900">⭐ Credits
+      </h2>
       <p class="text-lg">
-        Created by <a href="https://www.linkedin.com/in/taqsblaze" class="text-indigo-600 hover:underline hover:text-indigo-900 transition-colors duration-300">Tanaka Chinengundu</a><br>
+        Created by <a href="https://www.linkedin.com/in/taqsblaze"
+          class="text-indigo-600 hover:underline hover:text-indigo-900 transition-colors duration-300">Tanaka
+          Chinengundu</a><br>
         Inspired by Laravel's elegant development experience
       </p>
     </section>
-    
+
   </main>
   <!-- Chatbot Preview -->
-  
+
   <script>
     // Function to format large numbers
     function formatNumber(num) {
@@ -419,7 +493,7 @@ pytest --cov
       try {
         const response = await fetch('https://api.github.com/repos/TaqsBlaze/amen-cli');
         const data = await response.json();
-        
+
         if (data.stargazers_count !== undefined) {
           document.getElementById('github-stars').textContent = formatNumber(data.stargazers_count);
           document.getElementById('github-stars').classList.remove('pulse-loading');
@@ -433,11 +507,14 @@ pytest --cov
 
     // Function to fetch PyPI stats
     async function fetchPyPIStats() {
+      const corsProxy = 'https://cors-anywhere.herokuapp.com/'; // Example proxy, use with caution!
+      const url = 'https://pypistats.org/api/packages/amen-cli/recent?period=month'
+
       try {
         // Fetch package info for version
         const packageResponse = await fetch('https://pypi.org/pypi/amen-cli/json');
         const packageData = await packageResponse.json();
-        
+
         if (packageData.info && packageData.info.version) {
           document.getElementById('pypi-version').textContent = 'v' + packageData.info.version;
           document.getElementById('pypi-version').classList.remove('pulse-loading');
@@ -445,9 +522,12 @@ pytest --cov
 
         // Fetch download stats (using pypistats API)
         try {
-          const downloadResponse = await fetch('https://pypistats.org/api/packages/amen-cli/recent?period=month');
+          const downloadResponse = await fetch(corsProxy + url);
+          if (!downloadResponse.ok) {
+            throw new Error(`HTTP error! status: ${downloadResponse.status}`);
+          }
           const downloadData = await downloadResponse.json();
-          
+
           if (downloadData.data && downloadData.data.last_month) {
             document.getElementById('pypi-downloads').textContent = formatNumber(downloadData.data.last_month);
             document.getElementById('pypi-downloads').classList.remove('pulse-loading');
@@ -458,7 +538,7 @@ pytest --cov
           document.getElementById('pypi-downloads').textContent = '1.6K';
           document.getElementById('pypi-downloads').classList.remove('pulse-loading');
         }
-        
+
       } catch (error) {
         console.error('Error fetching PyPI stats:', error);
         document.getElementById('pypi-version').textContent = 'v0.9.0';
@@ -469,7 +549,7 @@ pytest --cov
     }
 
     // Fetch stats when page loads
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       fetchGitHubStats();
       fetchPyPIStats();
     });
@@ -480,11 +560,12 @@ pytest --cov
       fetchPyPIStats();
     }, 300000); // 5 minutes
   </script>
-       
+
   <footer class="bg-gradient-to-r from-indigo-600 to-purple-600 py-6 mt-10 relative z-10">
     <div class="container mx-auto text-center text-white text-lg font-semibold">
       Made with <span class="text-pink-400">❤️</span> by Tanaka Chinengundu
     </div>
   </footer>
 </body>
+
 </html>
