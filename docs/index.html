@@ -448,20 +448,20 @@ pytest --cov
           const downloadResponse = await fetch('https://pypistats.org/api/packages/amen-cli/recent?period=month');
           const downloadData = await downloadResponse.json();
           
-          if (downloadData.data && downloadData.data.last_month !== undefined) {
+          if (downloadData.data && downloadData.data.last_month) {
             document.getElementById('pypi-downloads').textContent = formatNumber(downloadData.data.last_month);
             document.getElementById('pypi-downloads').classList.remove('pulse-loading');
           }
         } catch (downloadError) {
           console.error('Error fetching PyPI download stats:', downloadError);
           // Fallback: try to estimate from package data or use placeholder
-          document.getElementById('pypi-downloads').textContent = '1.2K';
+          document.getElementById('pypi-downloads').textContent = '1.6K';
           document.getElementById('pypi-downloads').classList.remove('pulse-loading');
         }
         
       } catch (error) {
         console.error('Error fetching PyPI stats:', error);
-        document.getElementById('pypi-version').textContent = 'v0.8.3';
+        document.getElementById('pypi-version').textContent = 'v0.9.0';
         document.getElementById('pypi-downloads').textContent = '--';
         document.getElementById('pypi-version').classList.remove('pulse-loading');
         document.getElementById('pypi-downloads').classList.remove('pulse-loading');
