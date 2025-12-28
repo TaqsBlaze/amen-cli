@@ -24,6 +24,8 @@ class TemplateManager:
             (app_path / app_name / "models").mkdir(exist_ok=True)
         (app_path / app_name / "static").mkdir(exist_ok=True)
         (app_path / app_name / "static" / "uploads").mkdir(exist_ok=True)
+        (app_path / app_name / "static" / "js").mkdir(exist_ok=True)
+        (app_path / app_name / "static" / "css").mkdir(exist_ok=True)
         (app_path / app_name / "templates").mkdir(exist_ok=True)
         (app_path / "tests").mkdir(exist_ok=True)
         

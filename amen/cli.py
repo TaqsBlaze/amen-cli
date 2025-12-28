@@ -246,6 +246,11 @@ class AmenCLI:
         if not app_name:
             console.print("❌ No application name provided. Exiting.", style="red")
             return
+        if "-" in app_name:
+            # replace - with _ in application name to prevent import errors and application crush
+            console.print("Renaming application to python compatible naming convernsion", style="yellow")
+            app_name.replace("-", "_")
+            console.print(f"New application name: {app_name}", style="green")
 
         database = self.select_database()
         # Remove the exit condition for database selection

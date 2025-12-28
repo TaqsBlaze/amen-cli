@@ -239,6 +239,7 @@ amen run <appname>
 git clone https://github.com/taqsblaze/amen-cli.git
 
 # Install for development and testing
+cd amen-cli
 pip install -e .
 pip install pytest pytest-cov
 

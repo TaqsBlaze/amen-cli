@@ -35,12 +35,5 @@ FRAMEWORKS = {
     #     'packages': ['pyramid', 'waitress', 'python-dotenv'],
     #     'default_port': 6543,
     #     'entry_file': 'app.py',
-    # },
-    # 'django-hotsauce': {
-    #     'name': 'Django Hotsauce',
-    #     'description': 'Django-based rapid development framework',
-    #     'packages': ['django', 'django-hotsauce', 'python-dotenv'],
-    #     'default_port': 8000,
-    #     'entry_file': 'manage.py',
     # }
 }
