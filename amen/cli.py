@@ -481,7 +481,7 @@ def update():
             else:
                 console.print("❌ Update cancelled.", style="red")
     except requests.RequestException as e:
-        console.print(f"❌ Failed to fetch version information: {e}", style="red")
+        console.print(f"❌ Failed to fetch version information: No internet connection", style="red")
     except subprocess.CalledProcessError as e:
         console.print(f"❌ Failed to update the package: {e}", style="red")
     except Exception as e:
