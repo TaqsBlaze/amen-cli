@@ -295,9 +295,8 @@ class AmenCLI:
             f"""🎉 Successfully created '{app_name}'!
 
 📁 Next Steps:
-   1. cd {app_name}
-   2. source venv/bin/activate  (Linux/Mac) or venv\\Scripts\\activate (Windows)
-   3. amen run {app_name}
+   1. source {app_name}/venv/bin/activate  (Linux/Mac) or {app_name}\\venv\\Scripts\\activate (Windows)
+   2. amen run {app_name}
    
 Your app will be running at http://localhost:{FRAMEWORKS[framework]['default_port']}
             """.strip(),
@@ -355,6 +354,7 @@ def run(app_name):
         return
 
     venv_path = get_venv_path(Path(app_path))
+    print("Venv Path: ", venv_path)
     if not venv_path.exists() or not venv_path.is_dir():
         console.print(f"❌ Virtual environment not found for '{app_name}'.", style="red")
         console.print("   Please create the application using `amen create` first.", style="yellow")

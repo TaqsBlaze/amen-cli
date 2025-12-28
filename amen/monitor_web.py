@@ -6,7 +6,7 @@ from pathlib import Path
 from datetime import datetime
 import threading
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, url_for
 
 from rich.console import Console
 
