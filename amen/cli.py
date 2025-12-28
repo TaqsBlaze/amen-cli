@@ -306,7 +306,7 @@ class AmenCLI:
 
 📁 Next Steps:
    1.  cd {app_name}
-   2. source {app_name}/venv/bin/activate  (Linux/Mac) or {app_name}\\venv\\Scripts\\activate (Windows)
+   2. source venv/bin/activate  (Linux/Mac) or venv\\Scripts\\activate (Windows)
    3. python run.py
                                             Or
     Before you cd into application folder:
