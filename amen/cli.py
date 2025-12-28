@@ -489,6 +489,7 @@ def update():
 
 @main.command
 def about():
+    """Show information about amen-cli"""
     from . import __version__, __description__,__author__,__url__, SUPPORTED_FRAMEWORKS
     console.print(Panel.fit(f"""
                     Current version: [blue]{__version__}[/blue]
@@ -622,6 +623,20 @@ def web(port):
     except Exception as e:
         console.print(f"❌ Error starting web interface: {e}", style="red")
         console.print("   Make sure Flask is installed in your environment.", style="yellow")
+
+
+@main.command()
+@click.option("--port", "-p", default=5000, help="port to run we documentation")
+def docs(port):
+    """Launch offline web documentation"""
+    from .web import run_web_docs
+
+    try:
+        run_web_docs(port)
+    except Exception as error:
+        console.print(f"❌ Error starting web documentation interface", style="red")
+        console.print("   Make sure Flask is installed in your environment.", style="yellow")
+
 
 
 @main.command()
