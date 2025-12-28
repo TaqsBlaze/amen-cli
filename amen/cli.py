@@ -248,9 +248,14 @@ class AmenCLI:
             return
         if "-" in app_name:
             # replace - with _ in application name to prevent import errors and application crush
-            console.print("Renaming application to python compatible naming convernsion", style="yellow")
-            app_name.replace("-", "_")
-            console.print(f"New application name: {app_name}", style="green")
+            console.print("⚠️ Renaming application to python compatible naming convernsion", style="yellow")
+            app_name = app_name.replace("-", "_")
+            console.print(f"✅ New application name: {app_name}", style="green")
+        if " " in app_name:
+            # replace space with _ in application name
+            console.print("⚠️ Renaming application to python compatible naming convernsion", style="yellow")
+            app_name = app_name.replace(" ", "_")
+            console.print(f"✅ New application name: {app_name}", style="green")
 
         database = self.select_database()
         # Remove the exit condition for database selection
@@ -300,8 +305,12 @@ class AmenCLI:
             f"""🎉 Successfully created '{app_name}'!
 
 📁 Next Steps:
-   1. source {app_name}/venv/bin/activate  (Linux/Mac) or {app_name}\\venv\\Scripts\\activate (Windows)
-   2. amen run {app_name}
+   1.  cd {app_name}
+   2. source {app_name}/venv/bin/activate  (Linux/Mac) or {app_name}\\venv\\Scripts\\activate (Windows)
+   3. python run.py
+                                            Or
+    Before you cd into application folder:
+    amen run {app_name}
    
 Your app will be running at http://localhost:{FRAMEWORKS[framework]['default_port']}
             """.strip(),
@@ -472,7 +481,7 @@ def update():
             else:
                 console.print("❌ Update cancelled.", style="red")
     except requests.RequestException as e:
-        console.print(f"❌ Failed to fetch version information: {e}", style="red")
+        console.print(f"❌ Failed to fetch version information: No internet connection", style="red")
     except subprocess.CalledProcessError as e:
         console.print(f"❌ Failed to update the package: {e}", style="red")
     except Exception as e:
