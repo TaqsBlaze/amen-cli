@@ -847,7 +847,7 @@ def get_db():
     finally:
         db.close()
 """
-        self._write_file(app_path / app_name / "database.py", db_content)
+        # self._write_file(app_path / app_name / "database.py", db_content)
 
         # Add  model
         model_content = f"""from {app_name} import db
