@@ -1,5 +1,24 @@
 """AMEN CLI - Python Web Application Scaffolding Tool"""
-__version__ = "0.9.1"
+import re
+from pathlib import Path
+
+def _get_version():
+    """Dynamically read version from pyproject.toml"""
+    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+    
+    try:
+        with open(pyproject_path, "r") as f:
+            content = f.read()
+            # Match version = "x.y.z" in pyproject.toml
+            match = re.search(r'^version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
+            if match:
+                return match.group(1)
+    except (FileNotFoundError, IOError):
+        pass
+    
+    return "0.0.0.dev0"  # Fallback version
+
+__version__ = _get_version()
 __author__ = "Tanaka Chinengundu"
 
 __description__ = "Inspired by the laravel installer, Python Web Application Scaffolding Tool!"
