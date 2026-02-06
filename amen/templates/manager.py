@@ -47,13 +47,13 @@ class TemplateManager:
         app_content = f"""from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from flask_migrate import Migrate
-from flask_mail import Mail
+#from flask_migrate import Migrate
+#from flask_mail import Mail
 
 
 app = Flask(__name__)
-CORS(app, resources={
-    r"/*": {  # Allow all routes
+CORS(app, resources={{
+    r"/*": {{
         "origins": [
             "http://192.168.1.105",
             "http://localhost",
@@ -62,23 +62,23 @@ CORS(app, resources={
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "supports_credentials": True
-    }
-})
+    }}
+}})
 
 app.config['SECRET_KEY'] = 'your-secret-key'  # Change this in production
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/{app_name}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['UPLOAD_FOLDER'] = "waypoint/static/uploads/images/"
+app.config['UPLOAD_FOLDER'] = "{app_name}/static"
 
 app.app_context()
 db = SQLAlchemy(app)
-mail = Mail(app)
-migrate = Migrate(app, db, render_as_batch = True)
+#mail = Mail(app)
+#migrate = Migrate(app, db, render_as_batch = True)
 
-from medcore.api import endpoints
+from {app_name}.api import endpoints
 """
-        self._write_file(app_path / app_name / "app.py", app_content)
-        self._write_file(app_path / "run.py", f"from {app_name}.app import app\n\nif __name__ == '__main__':\n    app.run()")
+        self._write_file(app_path / app_name / "__init__.py", app_content)
+        self._write_file(app_path / "run.py", f"from {app_name} import app\n\nif __name__ == '__main__':\n    app.run()")
         
         if app_type == 'webapp':
             self._generate_html_template(app_path, app_name)
@@ -224,7 +224,7 @@ PORT={framework_info['default_port']}
             if database == 'sqlite3':
                 env_content += f"DATABASE_URL=sqlite:///./{app_name}.db\n"
             elif database == 'mysql':
-                env_content += "DATABASE_URL=mysql://user:password@localhost:3306/{app_name}\n"
+                env_content += f"DATABASE_URL=mysql://user:password@localhost:3306/{app_name}\n"
         
         self._write_file(app_path / ".env", env_content)
         
@@ -852,18 +852,22 @@ def get_db():
         # Add  model
         model_content = f"""from {app_name} import db
 from datetime import datetime
+import pytz
+
+time_zone = "Africa/Harare"
 
 class Users(db.Model):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    firstname = Column(String(100), nullable=False, index=True)
-    lastname = Column(String(255), nullable=False)
-    username = Column(String(255), nullable=False, unique=True, index=True)
-    email = Column(String(255), nullable=Flase, unique=True, index=True)
-    password = Column(String(255), nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    id = db.Column(db.Integer, primary_key=True, index=True)
+    firstname = db.Column(db.String(100), nullable=False, index=True)
+    lastname = db.Column(db.String(255), nullable=False)
+    username = db.Column(db.String(255), nullable=False, unique=True, index=True)
+    email = db.Column(db.String(255), nullable=False, unique=True, index=True)
+    role = db.Column(db.String(255), nullable=False, unique=False, default='user', index=True)
+    password = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True), default=datetime.now(pytz.timezone(time_zone)))
+    updated_at = db.Column(db.DateTime(timezone=True))
 """
         self._write_file(app_path / app_name / "models" / "models.py", model_content)
 
