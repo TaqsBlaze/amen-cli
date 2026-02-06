@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "amen-cli"
-version = "0.9.1"
+version = "0.10.1"
 description = "A laravel installer inspired Python Web Application Scaffolding Tool"
 readme = "README.md"
 authors = [
@@ -24,7 +24,8 @@ dependencies = [
     "rich>=0.1.0",
     "colorama>=0.4.4",
     "tabulate>=0.8.9",
-    "questionary>=1.10.0"
+    "questionary>=1.10.0",
+    "pytz"
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
