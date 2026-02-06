@@ -818,36 +818,6 @@ async def protected(current_user: dict = Depends(token_required)):
 
     def _generate_database_files(self, app_path: Path, app_name: str, database: str):
         """Generate database configuration files"""
-        db_content = f"""from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-SQLALCHEMY_DATABASE_URL = os.getenv('DATABASE_URL', {{
-    'sqlite3': f"'sqlite:///./{app_name}.db'",
-    'mysql': "'mysql://user:password@localhost:3306/{app_name}'",
-}}.get(database))
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    {{'connect_args={{"check_same_thread": False}}' if database == 'sqlite3' else ''}}
-)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base = declarative_base()
-
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-"""
-        # self._write_file(app_path / app_name / "database.py", db_content)
 
         # Add  model
         model_content = f"""from {app_name} import db
