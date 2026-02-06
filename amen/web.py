@@ -7,11 +7,10 @@ from . import __version__
 from .cli import AmenCLI
 from rich.console import Console
 console = Console()
+app = Flask(__name__)
 
-def run_web_interface(port=5000):
-    app = Flask(__name__)
-    
-    def find_free_port(start_port):
+
+def find_free_port(start_port):
         """Find next available port if default is taken"""
         while True:
             try:
@@ -21,6 +20,9 @@ def run_web_interface(port=5000):
             except OSError:
                 start_port += 1
 
+
+def run_web_interface(port=5000):
+    
     @app.route('/')
     def home():
         frameworks = {k: v['name'] for k, v in FRAMEWORKS.items()}
@@ -48,6 +50,26 @@ def run_web_interface(port=5000):
     
     console.print(f"🌐 Starting web interface on port {port}...", style="green")
     url = f"http://localhost:{port}"
+    
+    # Open browser in a separate thread
+    threading.Timer(1.5, lambda: webbrowser.open(url)).start()
+    
+    app.run(port=port, debug=False, threaded=True)
+
+def run_web_docs(port=5000):
+    '''
+    Running web documentation
+    '''
+    @app.route("/docs", methods=['GET'])
+    def docs():
+
+        return render_template("docs/index.html", version=__version__)
+    
+
+    port = find_free_port(port)
+    console.print(f"🌐 Starting Documentation on port {port}...", style="green")
+
+    url = f"http://localhost:{port}/docs"
     
     # Open browser in a separate thread
     threading.Timer(1.5, lambda: webbrowser.open(url)).start()
