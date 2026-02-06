@@ -59,8 +59,4 @@ setup(
         "Documentation": "https://github.com/taqsblaze/amen-cli#readme",
     },
     keywords=["python", "web-framework", "cli", "scaffold", "amen", "composer", "laravel", "flask", "django", "fastapi", "bottle", "pyramid"],
-    data_files=[
-        ('share/applications', ['debian/amen-cli.desktop']),
-        ('share/icons/hicolor/128x128/apps', ['image/icon/icon.ico']),
-    ],
 )

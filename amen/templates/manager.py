@@ -44,24 +44,38 @@ class TemplateManager:
     
     def _generate_flask_files(self, app_path: Path, app_type: str, app_name: str, database: str):
         """Generate Flask files"""
-        app_content = f"""from flask import Flask
-from {app_name}.api.endpoints import api_bp
+        app_content = f"""from flask import Flask, request
+from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from dotenv import load_dotenv
-import os
+from flask_migrate import Migrate
+from flask_mail import Mail
 
-load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={
+    r"/*": {  # Allow all routes
+        "origins": [
+            "http://192.168.1.105",
+            "http://localhost",
+            "http://127.0.0.1"
+        ],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    }
+})
 
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key')
+app.config['SECRET_KEY'] = 'your-secret-key'  # Change this in production
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/default'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = "waypoint/static/uploads/images/"
 
-# Register blueprints
-app.register_blueprint(api_bp)
+app.app_context()
+db = SQLAlchemy(app)
+mail = Mail(app)
+migrate = Migrate(app, db, render_as_batch = True)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)), debug=True)
+from medcore.api import endpoints
 """
         self._write_file(app_path / app_name / "app.py", app_content)
         self._write_file(app_path / "run.py", f"from {app_name}.app import app\n\nif __name__ == '__main__':\n    app.run()")
