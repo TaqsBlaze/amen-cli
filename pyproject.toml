@@ -25,7 +25,13 @@ dependencies = [
     "colorama>=0.4.4",
     "tabulate>=0.8.9",
     "questionary>=1.10.0",
-    "pytz"
+    "pytz",
+    "flask-mail",
+    "flask-migrate",
+    "flask-sqlalchemy",
+    "sqlalchemy",
+    "flask-cors",
+    "python-dotenv"
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
