@@ -66,7 +66,7 @@ CORS(app, resources={
 })
 
 app.config['SECRET_KEY'] = 'your-secret-key'  # Change this in production
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/default'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/{app_name}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = "waypoint/static/uploads/images/"
 
