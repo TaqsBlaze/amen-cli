@@ -13,7 +13,9 @@ def _get_version():
             match = re.search(r'^version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
             if match:
                 return match.group(1)
-    except (FileNotFoundError, IOError):
+    except Exception as e:
+        print(f"Error reading version from pyproject.toml: {e}")
+
         pass
     
     return "0.0.0.dev0"  # Fallback version
