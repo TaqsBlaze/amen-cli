@@ -749,20 +749,19 @@ def token_required(request: Request):
     def _generate_endpoints_file(self, app_path: Path, app_name: str, framework: str, app_type: str):
         """Generate endpoints.py file"""
         if framework == 'flask':
-            endpoints_content = f"""from flask import Blueprint, jsonify, render_template, request
+            endpoints_content = f"""from flask import jsonify, render_template, request
 from {app_name}.auth.token import token_required
+from {app_name} import app
 
-api_bp = Blueprint('api', __name__)
-
-@api_bp.route('/')
+@app.route('/')
 def index():
     {"return render_template('index.html', title='" + app_name + "')" if app_type == 'webapp' else "return jsonify({'message': 'Welcome to " + app_name + " API!'})"}
 
-@api_bp.route('/health')
+@app.route('/health')
 def health():
     return jsonify({{'status': 'healthy', 'service': '{app_name}'}})
 
-@api_bp.route('/protected')
+@app.route('/protected')
 @token_required
 def protected(current_user):
     return jsonify({{'message': 'This is a protected route!', 'user': current_user}})
@@ -850,21 +849,23 @@ def get_db():
 """
         self._write_file(app_path / app_name / "database.py", db_content)
 
-        # Add example model
-        model_content = """from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.sql import func
-from .database import Base
+        # Add  model
+        model_content = f"""from {app_name} import db
+from datetime import datetime
 
-class Example(Base):
-    __tablename__ = "examples"
+class Users(db.Model):
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(100), index=True)
-    description = Column(String(255))
+    firstname = Column(String(100), nullable=False, index=True)
+    lastname = Column(String(255), nullable=False)
+    username = Column(String(255), nullable=False, unique=True, index=True)
+    email = Column(String(255), nullable=Flase, unique=True, index=True)
+    password = Column(String(255), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 """
-        self._write_file(app_path / app_name / "models" / "example.py", model_content)
+        self._write_file(app_path / app_name / "models" / "models.py", model_content)
 
 # MANIFEST.in - for including non-Python files in the package
 MANIFEST_IN = """
