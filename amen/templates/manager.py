@@ -47,8 +47,8 @@ class TemplateManager:
         app_content = f"""from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-#from flask_migrate import Migrate
-#from flask_mail import Mail
+from flask_migrate import Migrate
+from flask_mail import Mail
 
 
 app = Flask(__name__)
@@ -72,8 +72,8 @@ app.config['UPLOAD_FOLDER'] = "{app_name}/static"
 
 app.app_context()
 db = SQLAlchemy(app)
-#mail = Mail(app)
-#migrate = Migrate(app, db, render_as_batch = True)
+mail = Mail(app)
+migrate = Migrate(app, db, render_as_batch = True)
 
 from {app_name}.api import endpoints
 """

@@ -6,7 +6,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="amen-cli",
-    version="0.11.1",
+    version="0.11.2",
     author="Tanaka Chinengundu",
     author_email="tanakah30@gmail.com",
     description="composer-inspired Python web framework scaffolding tool",
@@ -28,7 +28,13 @@ setup(
         "colorama>=0.4.4",
         "tabulate>=0.8.9",
         "questionary>=1.10.0",
-        "pytz"
+        "pytz",
+        "flask-mail",
+        "flask-migrate",
+        "flask-sqlalchemy",
+        "sqlalchemy",
+        "flask-cors",
+        "python-dotenv"
     ],
     entry_points={
         'console_scripts': [
