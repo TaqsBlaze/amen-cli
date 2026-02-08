@@ -10,3 +10,7 @@ flake8>=3.9.0
 mypy>=0.910
 psutil
 pytz
+flask-mail
+flask-cors
+pyjwt
+sqlalchemy

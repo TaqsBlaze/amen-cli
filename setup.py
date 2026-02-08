@@ -39,6 +39,7 @@ setup(
     entry_points={
         'console_scripts': [
             'amen=amen.cli:main',
+            'am=amen.cli:main',
         ],
     },
     classifiers=[

@@ -51,6 +51,7 @@ Repository = "https://github.com/taqsblaze/amen-cli.git"
 
 [project.scripts]
 amen = "amen.cli:main"
+am = "amen.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["amen"]
