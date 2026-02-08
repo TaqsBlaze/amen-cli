@@ -1,4 +1,4 @@
-# 🚀 AMEN CLI   ![icon](https://raw.githubusercontent.com/TaqsBlaze/amen-cli/refs/heads/main/image/icon.png)
+![icon](https://raw.githubusercontent.com/TaqsBlaze/amen-cli/refs/heads/main/image/icon.png)
 [![PyPI Version](https://img.shields.io/pypi/v/amen-cli)](https://pypi.org/project/amen-cli/)
 [![License](https://img.shields.io/github/license/TaqsBlaze/amen-cli)](https://github.com/TaqsBlaze/amen-cli/blob/main/LICENSE)
 [![Python Versions](https://img.shields.io/pypi/pyversions/amen-cli)](https://pypi.org/project/amen-cli/)
@@ -117,7 +117,7 @@ All commands can be run using the short-form alias `am` instead of `amen`:
 am create          # instead of: amen create
 am run myapp       # instead of: amen run myapp
 am test myapp      # instead of: amen test myapp
-am check-update    # instead of: amen check-update
+am update    # instead of: amen check-update
 am config myapp    # instead of: amen config myapp
 ```
 
@@ -141,8 +141,8 @@ amen test myapp
 am test myapp
 
 # Check for updates to the CLI
-amen check-update
-am check-update
+amen update
+am update
 
 # Manage project configuration
 amen config <app_name>
