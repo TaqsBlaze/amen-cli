@@ -82,9 +82,12 @@ Add this line to your ~/.bashrc or ~/.zshrc for permanent effect.
 ```bash
 # Create a new project
 amen create
+# or use the short-form alias
+am create
 
 # You can also use flags to specify the framework, type, and name:
 amen create -f flask -t webapp -n myapp
+am create -f flask -t webapp -n myapp
 
 # Available options:
 # -f, --framework   Framework to use (flask, fastapi, bottle, pyramid)
@@ -100,9 +103,22 @@ amen create -f flask -t webapp -n myapp
 
 # Launch the web interface for project management
 amen web [options]
+am web [options]
 
 # Available web interface options:
 # -p, --port       Port to run the web interface on (default: 3000)
+```
+
+### Command Alias
+
+All commands can be run using the short-form alias `am` instead of `amen`:
+
+```bash
+am create          # instead of: amen create
+am run myapp       # instead of: amen run myapp
+am test myapp      # instead of: amen test myapp
+am check-update    # instead of: amen check-update
+am config myapp    # instead of: amen config myapp
 ```
 
 ### Additional Commands
@@ -110,43 +126,55 @@ amen web [options]
 ```bash
 # Run your application
 amen run <app_name>
+am run <app_name>
 
 # Example:
 amen run myapp
+am run myapp
 
 # Run tests for your application
 amen test <app_name>
+am test <app_name>
 
 # Example:
 amen test myapp
+am test myapp
 
 # Check for updates to the CLI
 amen check-update
+am check-update
 
 # Manage project configuration
 amen config <app_name>
+am config <app_name>
 
 # Example:
 amen config myapp
+am config myapp
 
 # Run a security audit on your application
 amen audit <app_name> [options]
+am audit <app_name> [options]
 # Options:
 # -f, --format     Output format (txt, json, csv, xml; default: txt)
 # -s, --severity   Filter issues by severity (low, medium, high)
 # -o, --output     Save audit report to a specified file
 # Example:
 amen audit myapp -s high
+am audit myapp -s high
 
 # Monitor application status and resource usage in real time
 amen monitor <app_name> [options]
+am monitor <app_name> [options]
 # Options:
 # -p, --port       Port to monitor
 # -r, --refresh    Refresh rate in seconds (accepts decimal values; default: 0.1)
 # --web            Run a web based monitor
 # Example:
 amen monitor myapp --port 5000 --refresh 0.5
-amen monitor myapp --port 5000 -refresh 0.5 --web #Web based monitor
+am monitor myapp --port 5000 --refresh 0.5
+amen monitor myapp --port 5000 --refresh 0.5 --web
+am monitor myapp --port 5000 --refresh 0.5 --web
 ```
 
 ## 🌟 Project Structure

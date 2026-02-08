@@ -17,6 +17,8 @@ This release focuses on significantly improving the project creation experience 
     *   **Disk Space Checks:** Added checks to verify that sufficient disk space is available before starting project creation. This prevents failures due to insufficient storage and provides a more graceful user experience.
 *   **New `config` Command:**
     *   Introduced a new `config` command that allows users to easily open and edit the `.env` file for a project. This provides a convenient way to manage project-specific settings and environment variables.
+*   **Command Alias `am`:**
+    *   Added a short-form command alias `am` that can be used in place of `amen` for all commands. Users can now run `am [command]` as a faster alternative to `amen [command]`. This improves developer workflow and reduces typing.
 
 ### Detailed Explanation of Changes
 
@@ -28,6 +30,7 @@ This release focuses on significantly improving the project creation experience 
 *   **Improved Error Messages:** Error messages throughout the CLI have been updated to provide more context and guidance to users.
 *   **Disk Space Checks:** The `create_project` function now checks the available disk space before starting project creation. If insufficient space is available, an error message is displayed, and the process is aborted.
 *   **`config` Command:** The new `config` command uses the `edit_file` function to open the `.env` file in the user's default text editor. This provides a convenient way to manage project-specific settings.
+*   **Command Alias:** The `am` alias is now available as a shorthand for all `amen` commands, allowing users to type less while maintaining full functionality.
 
 ### Upgrade Instructions
 

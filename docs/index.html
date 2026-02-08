@@ -208,9 +208,12 @@ sudo pip3 install amen-cli</code></pre>
       <pre
         class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Create a new project
 amen create
+# or use the short form alias
+am create
 
 # You can also use flags to specify the framework, type, and name:
 amen create -f flask -t webapp -n myapp
+am create -f flask -t webapp -n myapp
 
 # Available options:
 # -f, --framework   Framework to use (flask, fastapi, bottle, pyramid)
@@ -225,6 +228,17 @@ amen create -f flask -t webapp -n myapp
 # 3. Name your project
 </code></pre>
       <div class="mt-4">
+        <span class="font-semibold text-gray-700">Command Alias:</span>
+        <p class="text-lg mb-2">All commands can be run using the short form alias <code>am</code> instead of <code>amen</code>:</p>
+        <pre
+          class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>am create          # instead of: amen create
+am run myapp       # instead of: amen run myapp
+am test myapp      # instead of: amen test myapp
+am update          # instead of: amen check-update
+am config myapp    # instead of: amen config myapp
+</code></pre>
+      </div>
+      <div class="mt-4">
         <span class="font-semibold text-gray-700">Flags:</span>
         <ul class="list-disc list-inside ml-4">
           <li><code>-f, --framework</code> Framework (flask, fastapi, bottle, pyramid)</li>
@@ -237,6 +251,7 @@ amen create -f flask -t webapp -n myapp
         <pre
           class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Launch the web interface for project management
 amen web [options]
+am web [options]
 
 # Available web interface options:
 # -p, --port       Port to run the web interface on (default: 3000)
@@ -247,43 +262,55 @@ amen web [options]
         <pre
           class="bg-gray-900 text-green-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code># Run your application
 amen run &lt;app_name&gt;
+am run &lt;app_name&gt;
 
 # Example:
 amen run myapp
+am run myapp
 
 # Run tests for your application
 amen test &lt;app_name&gt;
+am test &lt;app_name&gt;
 
 # Example:
 amen test myapp
+am test myapp
 
 # Check for updates to the CLI
 amen update
+am update
 
 # Manage project configuration
 amen config &lt;app_name&gt;
+am config &lt;app_name&gt;
 
 # Example:
 amen config myapp
+am config myapp
 
 # Run a security audit on your application
 amen audit &lt;app_name&gt; [options]
+am audit &lt;app_name&gt; [options]
 # Options:
 # -f, --format     Output format (txt, json, csv, xml; default: txt)
 # -s, --severity   Filter issues by severity (low, medium, high)
 # -o, --output     Save audit report to a specified file
 # Example:
 amen audit myapp -s high
+am audit myapp -s high
 
 # Monitor application status and resource usage in real time
 amen monitor &lt;app_name&gt; [options]
+am monitor &lt;app_name&gt; [options]
 # Options:
 # -p, --port       Port to monitor
 # -r, --refresh    Refresh rate in seconds (accepts decimal values; default: 0.1)
 # --web            Run a web based monitor
 # Example:
 amen monitor myapp --port 5000 --refresh 0.5
-amen monitor myapp --port 5000 -refresh 0.5 --web #Web based monitor
+am monitor myapp --port 5000 --refresh 0.5
+amen monitor myapp --port 5000 --refresh 0.5 --web #Web based monitor
+am monitor myapp --port 5000 --refresh 0.5 --web #Web based monitor
 </code></pre>
       </div>
     </section>
