@@ -1,39 +1,155 @@
-## AMEN CLI - Version 0.6.0 - Release Notes
+# Release Notes
 
-### Summary
+## Version 0.12.0 - Database Migrations & Package Management
 
-This release focuses on significantly improving the project creation experience within AMEN CLI. We've implemented several key optimizations to reduce setup time, enhance error handling, and provide a smoother workflow for developers.
+### 🎉 New Features
 
-### Key Changes
+#### 1. Database Migrations Command (`amen migrate`)
+A new command for managing database migrations using Flask-Migrate. This command simplifies the process of initializing, creating, and upgrading database schemas.
 
-*   **Optimized Project Creation Speed:**
-    *   **Parallel Package Installation:** Implemented parallel package installation using `pip` to drastically reduce dependency resolution time. This allows multiple packages to be installed concurrently, speeding up the overall process.
-    *   **Package Caching:** Introduced a package caching mechanism to store commonly used packages locally. This eliminates the need to download packages repeatedly for new projects, saving significant time and bandwidth.
-    *   **`venv` Optimization:** Utilized the `--copies` flag when creating virtual environments with `venv`. This creates a virtual environment by copying files instead of symlinking, resulting in faster creation times, especially on Windows.
-    *   **Alternative Package Installer Support:** Added experimental support for alternative package installers like `mamba` and `conda`. These installers can often resolve dependencies faster than `pip`, further accelerating project setup.
-*   **Enhanced Error Handling and Robustness:**
-    *   **Project Creation Rollback:** Implemented a rollback mechanism to automatically revert any changes made during project creation if an error occurs. This ensures that the system remains in a consistent state, even if the process fails partway through.
-    *   **Improved Error Messages:** Enhanced error messages throughout the CLI to provide more detailed and actionable information to users. This makes it easier to diagnose and resolve issues during project creation.
-    *   **Disk Space Checks:** Added checks to verify that sufficient disk space is available before starting project creation. This prevents failures due to insufficient storage and provides a more graceful user experience.
-*   **New `config` Command:**
-    *   Introduced a new `config` command that allows users to easily open and edit the `.env` file for a project. This provides a convenient way to manage project-specific settings and environment variables.
-*   **Command Alias `am`:**
-    *   Added a short-form command alias `am` that can be used in place of `amen` for all commands. Users can now run `am [command]` as a faster alternative to `amen [command]`. This improves developer workflow and reduces typing.
+**Features:**
+- Automatic initialization of migrations if not already initialized
+- Automatic migration file creation
+- Automatic database upgrade
+- Support for both SQLite and client-server databases (MySQL, PostgreSQL, etc.)
+- Clear error messages and progress feedback
 
-### Detailed Explanation of Changes
-
-*   **Parallel Package Installation:** The `install_packages` function now uses `subprocess.run` to execute `pip install` with multiple packages specified at once. This leverages `pip`'s ability to install packages in parallel, significantly reducing the overall installation time.
-*   **Package Caching:** The `_cache_packages` function now downloads packages to a local cache directory (`PACKAGE_CACHE_DIR`) before project creation. The `install_framework` function then checks if the required packages are available in the cache and installs them from there if possible.
-*   **`venv` Optimization:** The `create_virtual_environment` function now uses the `--copies` flag when creating virtual environments. This creates a fully self-contained virtual environment, which can improve performance and portability.
-*   **Alternative Package Installer Support:** The `install_framework` function now attempts to use `mamba` or `conda` if they are available. If these installers are not found, it falls back to using `pip`.
-*   **Project Creation Rollback:** The `create_project` function now uses a `try...except` block to catch any exceptions that occur during project creation. If an exception is caught, the `rollback_creation` function is called to remove any files or directories that were created.
-*   **Improved Error Messages:** Error messages throughout the CLI have been updated to provide more context and guidance to users.
-*   **Disk Space Checks:** The `create_project` function now checks the available disk space before starting project creation. If insufficient space is available, an error message is displayed, and the process is aborted.
-*   **`config` Command:** The new `config` command uses the `edit_file` function to open the `.env` file in the user's default text editor. This provides a convenient way to manage project-specific settings.
-*   **Command Alias:** The `am` alias is now available as a shorthand for all `amen` commands, allowing users to type less while maintaining full functionality.
-
-### Upgrade Instructions
-
+**Usage:**
 ```bash
-pip install --upgrade amen-cli
+amen migrate <app_name>
+am migrate <app_name>
+
+# Example:
+amen migrate myapp
+am migrate myapp
 ```
+
+**What it does:**
+1. Checks if migrations directory exists
+2. If not, initializes Flask-Migrate with `flask db init`
+3. Creates a new migration with `flask db migrate`
+4. Applies the migration with `flask db upgrade`
+
+**Requirements:**
+- Flask-Migrate must be installed in the application's virtual environment
+- For client-server databases, ensure the database server is running and properly configured
+
+**Note:** Currently optimized for Flask applications. FastAPI support will be added in future versions.
+
+---
+
+#### 2. Package Installation Command (`amen install`)
+A new command for installing packages directly into an application's virtual environment with automatic offline caching support.
+
+**Features:**
+- Install packages into application-specific virtual environments
+- Automatic package caching for offline use
+- Fallback to PyPI if caching fails due to network issues
+- Clear progress indicators and status messages
+- Support for any pip-compatible package
+
+**Usage:**
+```bash
+amen install <app_name> <package>
+am install <app_name> <package>
+
+# Examples:
+amen install myapp requests
+amen install myapp flask-cors
+amen install myapp sqlalchemy
+am install myapp flask-migrate
+```
+
+**What it does:**
+1. Validates that the application and virtual environment exist
+2. Attempts to download and cache the package to `~/.amen/package_cache` for offline use
+3. Installs the package in the application's virtual environment using pip
+4. If caching fails due to network issues, it still installs from PyPI
+5. Displays success message upon completion
+
+**Benefits:**
+- Faster package installation on subsequent setups (using cached packages)
+- Offline installation capability for previously cached packages
+- Keeps all application dependencies isolated in virtual environments
+- Automatic version tracking through `requirements.txt`
+
+**Note:** Package caching is attempted but won't block installation if it fails. The package will still be installed from PyPI.
+
+---
+
+### 🔧 Under the Hood
+
+#### New Helper Functions
+- `get_flask_path()`: Get the Flask CLI executable path based on the operating system
+
+#### Enhanced Error Handling
+- Both commands include comprehensive error messages for common issues
+- Network errors during caching are handled gracefully
+- Clear guidance provided when dependencies are missing
+
+---
+
+### 📋 Command Reference
+
+| Command | Syntax | Purpose |
+|---------|--------|---------|
+| migrate | `amen migrate <app_name>` | Run database migrations |
+| install | `amen install <app_name> <package>` | Install a package in app's venv |
+
+---
+
+### 🐛 Known Issues
+
+- Flask-Migrate support is currently limited to Flask applications
+- FastAPI database migration support requires manual setup (will be automated in future versions)
+- Package caching uses PyPI's wheel format; some packages may not cache if wheels are unavailable
+
+---
+
+### 🚀 Future Enhancements
+
+- FastAPI database migration support
+- Advanced dependency management with `pip-tools`
+- Automatic dependency resolution with conflict detection
+- Package version pinning and lockfile generation
+
+---
+
+### 💡 Tips & Tricks
+
+**For Database Migrations:**
+- Always backup your database before running migrations
+- Test migrations on a development database first
+- Use meaningful migration names by editing the generated migration files
+
+**For Package Installation:**
+- Use `amen install <app_name> -r requirements.txt` to install from a requirements file (standard pip syntax)
+- Check `~/.amen/package_cache` to see cached packages
+- Manually delete cache files if you want to re-download packages
+
+---
+
+### 📝 Changelog
+
+#### Added
+- `migrate` command for Flask database migrations
+- `install` command for managing application dependencies
+- Automatic package caching system in `~/.amen/package_cache`
+- `get_flask_path()` helper function
+
+#### Improved
+- Error messages now include specific guidance for resolution
+- Progress indicators for long-running operations
+
+---
+
+### 🙏 Contributors
+
+Thanks to the community for feedback and feature requests!
+
+---
+
+**For more information and documentation, visit:**
+- 📖 [Documentation](https://github.com/TaqsBlaze/amen-cli/docs)
+- 🐛 [Issue Tracker](https://github.com/TaqsBlaze/amen-cli/issues)
+- 💬 [Discussions](https://github.com/TaqsBlaze/amen-cli/discussions)

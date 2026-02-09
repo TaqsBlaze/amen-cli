@@ -175,6 +175,29 @@ amen monitor myapp --port 5000 --refresh 0.5
 am monitor myapp --port 5000 --refresh 0.5
 amen monitor myapp --port 5000 --refresh 0.5 --web
 am monitor myapp --port 5000 --refresh 0.5 --web
+
+# Run database migrations for your application
+amen migrate <app_name>
+am migrate <app_name>
+
+# Example:
+amen migrate myapp
+am migrate myapp
+# This will:
+# 1. Initialize migrations if not already initialized
+# 2. Create a new migration
+# 3. Upgrade the database
+
+# Install a package in your application's virtual environment
+amen install <app_name> <package>
+am install <app_name> <package>
+
+# Example:
+amen install myapp requests
+am install myapp flask-cors
+# This will:
+# 1. Cache the package for offline use
+# 2. Install the package in the application's virtual environment
 ```
 
 ## 🌟 Project Structure

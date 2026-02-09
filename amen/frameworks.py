@@ -4,9 +4,9 @@ FRAMEWORKS = {
     'flask': {
         'name': 'Flask',
         'description': 'Lightweight WSGI web application framework',
-        'packages': ['flask', 'flask-cors', 'python-dotenv','pytest','pytest-cov','pyjwt','flask-sqlalchemy','sqlalchemy','pymysql'],
+        'packages': ['flask', 'flask-cors', 'flask-migrate','python-dotenv','pytest','pytest-cov','pyjwt','flask-sqlalchemy','sqlalchemy','pymysql'],
         'default_port': 5000,
-        'entry_file': 'run.py',
+        'entry_file': 'app.py',
     },
     # 'django': {
     #     'name': 'Django',
