@@ -50,6 +50,12 @@ def get_python_path(venv_path: Path) -> Path:
         return venv_path / "bin" / "python"
     return venv_path / "Scripts" / "python"
 
+def get_flask_path(venv_path: Path) -> Path:
+    """Get flask executable path based on OS"""
+    if sys.platform.startswith('linux'):
+        return venv_path / "bin" / "flask"
+    return venv_path / "Scripts" / "flask"
+
 def create_project(path, framework, project_type):
     """
     Create a new project with the specified framework and type.
@@ -720,6 +726,119 @@ def monitor(app_name, port, refresh, web):
         console.print("\n✋ Monitoring stopped", style="yellow")
     except Exception as e:
         console.print(f"❌ Error: {e}", style="red")
+
+@main.command()
+@click.argument("app_name", type=str)
+def migrate(app_name):
+    """Run database migrations for the specified application using Flask-Migrate."""
+    app_path = Path.cwd() / app_name
+
+    if not app_path.exists() or not app_path.is_dir():
+        console.print(f"Application '{app_name}' not found.", style="red")
+        return
+
+    venv_path = get_venv_path(app_path)
+    if not venv_path.exists() or not venv_path.is_dir():
+        console.print(f"Virtual environment not found for '{app_name}'.", style="red")
+        console.print("   Please create the application using `amen create` first.", style="yellow")
+        return
+
+    flask_path = get_flask_path(venv_path)
+    migrations_dir = app_path / "migrations"
+
+    try:
+        # Check if migrations directory exists
+        if not migrations_dir.exists():
+            console.print(f"Initializing migrations for '{app_name}'...", style="blue")
+            subprocess.run(
+                [str(flask_path), "db", "init"],
+                cwd=str(app_path),
+                check=True,
+                capture_output=True
+            )
+            console.print("Migrations initialized", style="green")
+
+        console.print(f"Running migrations for '{app_name}'...", style="blue")
+        
+        # Create migration
+        subprocess.run(
+            [str(flask_path), "db", "migrate"],
+            cwd=str(app_path),
+            check=True,
+            capture_output=True
+        )
+        console.print("Migration created", style="green")
+
+        # Upgrade database
+        subprocess.run(
+            [str(flask_path), "db", "upgrade"],
+            cwd=str(app_path),
+            check=True,
+            capture_output=True
+        )
+        console.print("Database upgraded successfully", style="green")
+
+    except subprocess.CalledProcessError as e:
+        console.print(f"Migration failed:", style="red")
+        console.print("Make sure flask-migrate is installed in the virtual environment.", style="yellow")
+        console.print("If you are using a client server database make sure it is running and correctly configured.", style="blue")
+    except FileNotFoundError as e:
+        console.print(f"Error: {e}. Make sure Flask is installed.", style="red")
+
+
+@main.command()
+@click.argument("app_name", type=str)
+@click.argument("package", type=str)
+def install(app_name, package):
+    """Install a package in the application's virtual environment and cache it."""
+    app_path = Path.cwd() / app_name
+
+    if not app_path.exists() or not app_path.is_dir():
+        console.print(f"Application '{app_name}' not found.", style="red")
+        return
+
+    venv_path = get_venv_path(app_path)
+    if not venv_path.exists() or not venv_path.is_dir():
+        console.print(f"Virtual environment not found for '{app_name}'.", style="red")
+        console.print("Please create the application using `amen create` first.", style="yellow")
+        return
+
+    pip_path = get_pip_path(venv_path)
+    print("Pip Path: ", pip_path)
+    try:
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            console=console,
+        ) as progress:
+            # Cache the package
+            task_id = progress.add_task(f"Caching {package}...", total=None)
+            try:
+                subprocess.run(
+                    [sys.executable, "-m", "pip", "download", "--no-cache-dir", "-d", str(PACKAGE_CACHE_DIR), package],
+                    check=True,
+                    capture_output=True
+                )
+                progress.update(task_id, description=f"✅ {package} cached")
+            except subprocess.CalledProcessError:
+                console.print(f"⚠️  Could not cache {package} (network issue). Installing from PyPI.", style="yellow")
+                progress.update(task_id, description=f"⚠️  Could not cache {package}")
+
+            # Install the package in virtual environment
+            progress.update(task_id, description=f"Installing {package}...", total=None)
+            subprocess.run(
+                [str(pip_path), "install", package],
+                check=True,
+                capture_output=True
+            )
+            progress.update(task_id, description=f"{package} installed")
+
+        console.print(f"✅ Successfully installed {package} in '{app_name}'.", style="green")
+
+    except subprocess.CalledProcessError as e:
+        console.print(f"Failed to install {package}: {e}", style="red")
+    except FileNotFoundError as e:
+        console.print(f"Error: {e}. Make sure pip is available.", style="red")
 
 
 if __name__ == "__main__":

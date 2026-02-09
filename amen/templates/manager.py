@@ -89,7 +89,7 @@ migrate = Migrate(app, db, render_as_batch = True)
 from {app_name}.api import endpoints
 """
         self._write_file(app_path / app_name / "__init__.py", app_content)
-        self._write_file(app_path / "run.py", f"from {app_name} import app\n\nif __name__ == '__main__':\n    app.run()")
+        self._write_file(app_path / "app.py", f"from {app_name} import app\n\nif __name__ == '__main__':\n    app.run()")
         
         if app_type == 'webapp':
             self._generate_html_template(app_path, app_name)
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
 """
         self._write_file(app_path / app_name / "main.py", main_content)
-        self._write_file(app_path / "run.py", f"import uvicorn\nfrom {app_name}.main import app\n\nif __name__ == '__main__':\n    uvicorn.run(app, host='0.0.0.0', port=8000)")
+        self._write_file(app_path / "app.py", f"import uvicorn\nfrom {app_name}.main import app\n\nif __name__ == '__main__':\n    uvicorn.run(app, host='0.0.0.0', port=8000)")
         
         if app_type == 'webapp':
             self._generate_html_template(app_path, app_name)
@@ -263,7 +263,7 @@ A web application built with {framework_info['name']}.
 
 5. **Run the application**
    ```bash
-   python run.py
+   python app.py
    ```
 
 Your application will be available at `http://localhost:{framework_info['default_port']}`
@@ -287,7 +287,7 @@ Your application will be available at `http://localhost:{framework_info['default
 ├── .env                   # Environment variables (local)
 ├── .env.example          # Environment variables template
 ├── .gitignore            # Git ignore rules
-├── run.py                # Application runner
+├── app.py                # Application runner
 └── README.md             # This file
 ```
 
@@ -395,7 +395,7 @@ COPY . .
 
 EXPOSE {framework_info['default_port']}
 
-CMD ["python", "run.py"]
+CMD ["python", "app.py"]
 ```
 
 ## 🤝 Contributing
