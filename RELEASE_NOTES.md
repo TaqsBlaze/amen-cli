@@ -1,155 +1,109 @@
 # Release Notes
 
-## Version 0.12.0 - Database Migrations & Package Management
+## Version 0.13.0 - Routing Modularization, SQLite Fixes, and Scaffold Expansion
 
-### 🎉 New Features
+Release date: 2026-04-10
 
-#### 1. Database Migrations Command (`amen migrate`)
-A new command for managing database migrations using Flask-Migrate. This command simplifies the process of initializing, creating, and upgrading database schemas.
+This release focuses on project scaffolding quality and day-two developer workflow improvements. It resolves database configuration issues, modernizes generated web output, and adds extensible scaffolding commands for existing projects.
 
-**Features:**
-- Automatic initialization of migrations if not already initialized
-- Automatic migration file creation
-- Automatic database upgrade
-- Support for both SQLite and client-server databases (MySQL, PostgreSQL, etc.)
-- Clear error messages and progress feedback
+## Highlights
 
-**Usage:**
+### 1. SQLite setup now uses Flask instance storage
+When SQLite is selected during project creation, generated Flask apps now configure SQLAlchemy to use a database file under `app.instance_path`.
+
+What changed:
+- Instance folder is created automatically.
+- SQLite database path is generated with `os.path.join(app.instance_path, "<app>.db")`.
+- Path is normalized before building `SQLALCHEMY_DATABASE_URI`.
+
+Why this matters:
+- Matches Flask-recommended instance-based storage.
+- Prevents accidental URI mismatch when SQLite is selected.
+- Avoids committing local DB files into package code paths.
+
+### 2. `amen run` now targets `app.py`
+The run command now executes `app.py` for generated projects.
+
+What changed:
+- Runtime entry file changed from `run.py` to `app.py`.
+- User facing next step messaging now points to `python app.py`.
+- Documentation references updated to align with current behavior.
+
+Why this matters:
+- Aligns command behavior with generated scaffold files.
+- Removes confusion around outdated runner filenames.
+
+### 3. Endpoint scaffolding is now modular
+Generated endpoint logic is no longer concentrated in a single module.
+
+Flask scaffold now creates:
+- `api/home.py`
+- `api/health.py`
+- `api/protected.py`
+- `api/__init__.py` to import route modules
+
+FastAPI scaffold now creates:
+- `api/root.py`
+- `api/health.py`
+- `api/protected.py`
+- `api/endpoints.py` as router aggregator
+
+Why this matters:
+- Cleaner organization as routes grow.
+- Easier file ownership and feature focused edits.
+- Better extension path for new endpoints.
+
+### 4. New `add` command for incremental scaffolding
+A new command supports adding project components after initial creation.
+
+Supported syntax:
 ```bash
-amen migrate <app_name>
-am migrate <app_name>
-
-# Example:
-amen migrate myapp
-am migrate myapp
+am add endpoint <name>
+am add util <name>
+am add view <name>
 ```
 
-**What it does:**
-1. Checks if migrations directory exists
-2. If not, initializes Flask-Migrate with `flask db init`
-3. Creates a new migration with `flask db migrate`
-4. Applies the migration with `flask db upgrade`
+Command behavior:
+- Accepts only `endpoint`, `util`, or `view`.
+- Normalizes names (`-` and spaces become `_`) and validates identifier format.
+- Uses project framework from `.amen_config`.
 
-**Requirements:**
-- Flask-Migrate must be installed in the application's virtual environment
-- For client-server databases, ensure the database server is running and properly configured
+Generated artifacts:
+- `endpoint`: framework-specific route module.
+- `util`: `utils/<name>.py` helper module.
+- `view`: endpoint module + `templates/<name>.html` page.
 
-**Note:** Currently optimized for Flask applications. FastAPI support will be added in future versions.
+Framework integration:
+- Flask: route module is auto-registered in package `__init__.py` import line.
+- FastAPI: new router module is auto-included in `api/endpoints.py`.
 
----
+### 5. Default web index page redesign
+The generated web app landing page was refreshed with a more modern, production-style visual baseline.
 
-#### 2. Package Installation Command (`amen install`)
-A new command for installing packages directly into an application's virtual environment with automatic offline caching support.
+Included improvements:
+- Better hierarchy and typography.
+- Updated layout with responsive sections and feature cards.
+- More polished visual treatment for first-run UX.
 
-**Features:**
-- Install packages into application-specific virtual environments
-- Automatic package caching for offline use
-- Fallback to PyPI if caching fails due to network issues
-- Clear progress indicators and status messages
-- Support for any pip-compatible package
+## Documentation updates
+- Project structure examples updated to reflect endpoint module separation.
+- Runner references updated from `run.py` to `app.py`.
+- Flask/FastAPI endpoint architecture notes revised.
 
-**Usage:**
-```bash
-amen install <app_name> <package>
-am install <app_name> <package>
+## Version updates
+Updated to `0.13.0` in:
+- `pyproject.toml`
+- `setup.py`
 
-# Examples:
-amen install myapp requests
-amen install myapp flask-cors
-amen install myapp sqlalchemy
-am install myapp flask-migrate
-```
+## Notes
+- Existing projects with older route layouts continue to work, but newly generated projects now use modular route files.
+- Existing projects can adopt the new approach incrementally using `am add`.
 
-**What it does:**
-1. Validates that the application and virtual environment exist
-2. Attempts to download and cache the package to `~/.amen/package_cache` for offline use
-3. Installs the package in the application's virtual environment using pip
-4. If caching fails due to network issues, it still installs from PyPI
-5. Displays success message upon completion
+## Quick verification checklist
+1. Create a Flask app with SQLite and confirm URI points to the instance DB.
+2. Run `am run <app>` and verify `app.py` is executed.
+3. Generate a new project and confirm separate endpoint modules are present.
+4. Run `am add endpoint profile`, `am add util email`, and `am add view dashboard` and verify files are created and registered.
 
-**Benefits:**
-- Faster package installation on subsequent setups (using cached packages)
-- Offline installation capability for previously cached packages
-- Keeps all application dependencies isolated in virtual environments
-- Automatic version tracking through `requirements.txt`
-
-**Note:** Package caching is attempted but won't block installation if it fails. The package will still be installed from PyPI.
-
----
-
-### 🔧 Under the Hood
-
-#### New Helper Functions
-- `get_flask_path()`: Get the Flask CLI executable path based on the operating system
-
-#### Enhanced Error Handling
-- Both commands include comprehensive error messages for common issues
-- Network errors during caching are handled gracefully
-- Clear guidance provided when dependencies are missing
-
----
-
-### 📋 Command Reference
-
-| Command | Syntax | Purpose |
-|---------|--------|---------|
-| migrate | `amen migrate <app_name>` | Run database migrations |
-| install | `amen install <app_name> <package>` | Install a package in app's venv |
-
----
-
-### 🐛 Known Issues
-
-- Flask-Migrate support is currently limited to Flask applications
-- FastAPI database migration support requires manual setup (will be automated in future versions)
-- Package caching uses PyPI's wheel format; some packages may not cache if wheels are unavailable
-
----
-
-### 🚀 Future Enhancements
-
-- FastAPI database migration support
-- Advanced dependency management with `pip-tools`
-- Automatic dependency resolution with conflict detection
-- Package version pinning and lockfile generation
-
----
-
-### 💡 Tips & Tricks
-
-**For Database Migrations:**
-- Always backup your database before running migrations
-- Test migrations on a development database first
-- Use meaningful migration names by editing the generated migration files
-
-**For Package Installation:**
-- Use `amen install <app_name> -r requirements.txt` to install from a requirements file (standard pip syntax)
-- Check `~/.amen/package_cache` to see cached packages
-- Manually delete cache files if you want to re-download packages
-
----
-
-### 📝 Changelog
-
-#### Added
-- `migrate` command for Flask database migrations
-- `install` command for managing application dependencies
-- Automatic package caching system in `~/.amen/package_cache`
-- `get_flask_path()` helper function
-
-#### Improved
-- Error messages now include specific guidance for resolution
-- Progress indicators for long-running operations
-
----
-
-### 🙏 Contributors
-
-Thanks to the community for feedback and feature requests!
-
----
-
-**For more information and documentation, visit:**
-- 📖 [Documentation](https://github.com/TaqsBlaze/amen-cli/docs)
-- 🐛 [Issue Tracker](https://github.com/TaqsBlaze/amen-cli/issues)
-- 💬 [Discussions](https://github.com/TaqsBlaze/amen-cli/discussions)
+## Thank you
+Thanks to everyone providing project structure and workflow feedback that shaped this release.

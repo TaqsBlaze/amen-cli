@@ -56,6 +56,47 @@ def get_flask_path(venv_path: Path) -> Path:
         return venv_path / "bin" / "flask"
     return venv_path / "Scripts" / "flask"
 
+def register_flask_module(project_root: Path, app_name: str, module_name: str):
+    """Register a Flask endpoint module in package init."""
+    init_file = project_root / app_name / "__init__.py"
+    if not init_file.exists():
+        return
+
+    content = init_file.read_text(encoding='utf-8')
+    if module_name in content:
+        return
+
+    import_line = f"from {app_name}.api import "
+    lines = content.splitlines()
+    changed = False
+    for index, line in enumerate(lines):
+        if line.startswith(import_line):
+            lines[index] = line + f", {module_name}"
+            changed = True
+            break
+
+    if not changed:
+        lines.append(f"{import_line}{module_name}")
+
+    init_file.write_text("\n".join(lines) + "\n", encoding='utf-8')
+
+def register_fastapi_module(project_root: Path, app_name: str, module_name: str):
+    """Register a FastAPI router module in api/endpoints.py."""
+    endpoints_file = project_root / app_name / "api" / "endpoints.py"
+    if not endpoints_file.exists():
+        return
+
+    content = endpoints_file.read_text(encoding='utf-8')
+    import_line = f"from .{module_name} import router as {module_name}_router"
+    include_line = f"api_router.include_router({module_name}_router)"
+
+    if import_line not in content:
+        content = content + "\n" + import_line
+    if include_line not in content:
+        content = content + "\n" + include_line + "\n"
+
+    endpoints_file.write_text(content, encoding='utf-8')
+
 def create_project(path, framework, project_type):
     """
     Create a new project with the specified framework and type.
@@ -91,7 +132,7 @@ class AmenCLI:
         """Display welcome banner"""
         from . import __version__
         console.print(Panel.fit(
-            f"""AMEN: inspired by the laravel installer, a python Web Application Scaffolding
+            f"""AMEN: A python Web Application Scaffolding [magenta]tool[/magenta]
         Create your web applications with ease!
         By [bold magenta]Tanaka Chinengundu[/bold magenta]
         [bold blue]Version: {__version__}[/bold blue]
@@ -313,7 +354,7 @@ class AmenCLI:
 📁 Next Steps:
    1.  cd {app_name}
    2. source venv/bin/activate  (Linux/Mac) or venv\\Scripts\\activate (Windows)
-   3. python run.py
+   3. python app.py
                                             Or
     Before you cd into application folder:
     amen run {app_name}
@@ -394,7 +435,7 @@ def run(app_name):
         console.print(f"❌ Unsupported framework '{framework}' in '.amen_config'.", style="red")
         return
 
-    entry_file = "run.py"
+    entry_file = "app.py"
     default_port = FRAMEWORKS[framework]['default_port']
 
     # Construct the run command
@@ -410,6 +451,155 @@ def run(app_name):
         console.print(f"❌ Error running the application: {e}", style="red")
     except FileNotFoundError as e:
         console.print(f"❌ Error: {e}.  Make sure {entry_file} exists.", style="red")
+
+@main.command()
+@click.argument("app_name", type=str)
+@click.argument("item_type", type=click.Choice(['endpoint', 'util', 'view'], case_sensitive=False))
+@click.argument("name", type=str)
+def add(app_name, item_type, name):
+    """Add endpoint, util, or view scaffolding to a created application."""
+    app_path = Path.cwd() / app_name
+
+    if not app_path.exists() or not app_path.is_dir():
+        console.print(f"âŒ Application '{app_name}' not found.", style="red")
+        return
+
+    module_name = name.strip().replace("-", "_").replace(" ", "_")
+    if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", module_name):
+        console.print("âŒ Invalid name. Use letters, numbers, and underscores only.", style="red")
+        return
+
+    config_file = app_path / ".amen_config"
+    if not config_file.exists():
+        console.print(f"âŒ Configuration file '.amen_config' not found in '{app_name}'.", style="red")
+        return
+
+    with open(config_file, "r") as f:
+        framework = f.readline().strip()
+
+    item_type = item_type.lower()
+    package_dir = app_path / app_name
+
+    if item_type == "util":
+        utils_dir = package_dir / "utils"
+        utils_dir.mkdir(parents=True, exist_ok=True)
+        (utils_dir / "__init__.py").touch(exist_ok=True)
+        util_file = utils_dir / f"{module_name}.py"
+        util_file.write_text(
+            f"""def run():
+    \"\"\"Utility entry point for {module_name}.\"\"\"
+    print("Running {module_name} utility")
+""",
+            encoding='utf-8'
+        )
+        console.print(f"âœ… Added util: {util_file}", style="green")
+        return
+
+    if framework == "flask":
+        api_dir = package_dir / "api"
+        api_dir.mkdir(parents=True, exist_ok=True)
+        endpoint_file = api_dir / f"{module_name}.py"
+
+        if item_type == "view":
+            template_dir = package_dir / "templates"
+            template_dir.mkdir(parents=True, exist_ok=True)
+            template_file = template_dir / f"{module_name}.html"
+            template_file.write_text(
+                f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{module_name}</title>
+</head>
+<body>
+    <h1>{module_name.title()} page</h1>
+</body>
+</html>
+""",
+                encoding='utf-8'
+            )
+            endpoint_file.write_text(
+                f"""from flask import render_template
+from {app_name} import app
+
+@app.route('/{module_name}')
+def {module_name}():
+    return render_template('{module_name}.html')
+""",
+                encoding='utf-8'
+            )
+        else:
+            endpoint_file.write_text(
+                f"""from flask import jsonify
+from {app_name} import app
+
+@app.route('/{module_name}')
+def {module_name}():
+    return jsonify({{'message': '{module_name} endpoint'}})
+""",
+                encoding='utf-8'
+            )
+
+        register_flask_module(app_path, app_name, module_name)
+        console.print(f"âœ… Added {item_type}: {endpoint_file}", style="green")
+        return
+
+    if framework == "fastapi":
+        api_dir = package_dir / "api"
+        api_dir.mkdir(parents=True, exist_ok=True)
+        endpoint_file = api_dir / f"{module_name}.py"
+
+        if item_type == "view":
+            template_dir = package_dir / "templates"
+            template_dir.mkdir(parents=True, exist_ok=True)
+            template_file = template_dir / f"{module_name}.html"
+            template_file.write_text(
+                f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{module_name}</title>
+</head>
+<body>
+    <h1>{module_name.title()} page</h1>
+</body>
+</html>
+""",
+                encoding='utf-8'
+            )
+            endpoint_file.write_text(
+                f"""from fastapi import APIRouter, Request
+from fastapi.templating import Jinja2Templates
+
+router = APIRouter()
+
+@router.get('/{module_name}')
+async def {module_name}(request: Request):
+    templates = Jinja2Templates(directory='{app_name}/templates')
+    return templates.TemplateResponse('{module_name}.html', {{'request': request, 'title': '{module_name}'}})
+""",
+                encoding='utf-8'
+            )
+        else:
+            endpoint_file.write_text(
+                f"""from fastapi import APIRouter
+
+router = APIRouter()
+
+@router.get('/{module_name}')
+async def {module_name}():
+    return {{'message': '{module_name} endpoint'}}
+""",
+                encoding='utf-8'
+            )
+
+        register_fastapi_module(app_path, app_name, module_name)
+        console.print(f"âœ… Added {item_type}: {endpoint_file}", style="green")
+        return
+
+    console.print(f"âŒ Unsupported framework '{framework}' for add command.", style="red")
 
 @main.command()
 @click.argument("app_name", type=str)

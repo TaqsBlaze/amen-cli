@@ -209,7 +209,7 @@ When you create a project, AMEN now generates a **modular structure**:
 your-app/
 ├── venv/                   # Virtual environment
 ├── your-app/               # Main application package
-│   ├── api/                # API endpoints (endpoints.py)
+│   ├── api/                # API endpoint modules
 │   ├── auth/               # Authentication (token.py, etc.)
 │   ├── models/             # Models module
 │   ├── static/             # Static files (CSS, JS, images)
@@ -224,12 +224,12 @@ your-app/
 ├── .env                    # Environment variables (local)
 ├── .env.example            # Environment variables template
 ├── .gitignore              # Git ignore rules
-├── run.py                  # Application runner
+├── app.py                  # Application runner
 └── README.md               # This file
 ```
 
-- **Flask**: Uses `app.py` and registers a blueprint from `api/endpoints.py`. Token authentication is in `auth/token.py`.
-- **FastAPI**: Uses `main.py` and includes a router from `api/endpoints.py`. Token authentication is in `auth/token.py`.
+- **Flask**: Uses `app.py` and registers routes from separate files inside `api/` (for example `home.py`, `health.py`, `protected.py`). Token authentication is in `auth/token.py`.
+- **FastAPI**: Uses `main.py` and includes routers from separate files in `api/` through `api/endpoints.py`. Token authentication is in `auth/token.py`.
 - **Webapp**: Includes HTML templates and static files. FastAPI mounts static and template directories.
 - **API**: Generates only API endpoints and disables template/static mounting.
 
@@ -278,7 +278,7 @@ source venv/bin/activate  # Linux/Mac
 venv\Scripts\activate     # Windows
 
 # Run your application
-python run.py
+python app.py
 Or
 #Before you cd into your project you can run the following 
 amen run <appname>
@@ -330,3 +330,5 @@ Inspired by Laravel's elegant development experience
 ---
 
 Made with ❤️ by Tanaka Chinengundu
+
+
