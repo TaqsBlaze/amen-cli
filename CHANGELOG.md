@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.13.1] - 2026-04-11
+
+### Changed
+- Project creation now installs framework dependencies from local cache first after virtual environment setup.
+- If required packages are not available in cache, installation now falls back to online package installation.
+
+### Fixed
+- Fixed cache detection/install behavior so package creation no longer fails due to strict wheel filename matching.
+
+### Versioning
+- Bumped package version from `0.13.0` to `0.13.1` in project metadata.
+
 ## [0.13.0] - 2026-04-10
 
 ### Added
