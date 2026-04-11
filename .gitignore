@@ -31,3 +31,4 @@ ENV/
 *.swo
 .DS_Store
 Thumbs.db
+AGENTS*

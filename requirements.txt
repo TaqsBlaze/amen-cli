@@ -14,3 +14,4 @@ flask-mail
 flask-cors
 pyjwt
 sqlalchemy
+pytest

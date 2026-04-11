@@ -44,11 +44,19 @@ class TemplateManager:
     
     def _generate_flask_files(self, app_path: Path, app_type: str, app_name: str, database: str):
         """Generate Flask files"""
+        database_uri = f"app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/{app_name}'"
+        if database == 'sqlite3':
+            database_uri = f"""os.makedirs(app.instance_path, exist_ok=True)
+sqlite_path = os.path.join(app.instance_path, "{app_name}.db")
+sqlite_path = sqlite_path.replace("\\\\", "/")
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{{sqlite_path}}"
+""" 
+
         app_content = f"""from flask import Flask, request
+import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_migrate import Migrate
-from flask_mail import Mail
 
 
 app = Flask(__name__)
@@ -66,7 +74,7 @@ CORS(app, resources={{
 }})
 
 app.config['SECRET_KEY'] = 'your-secret-key'  # Change this in production
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/{app_name}'
+{database_uri}
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = "{app_name}/static/uploads"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
@@ -80,13 +88,12 @@ app.config['MAIL_USERNAME'] = 'noreply@your-domain.co.zw'
 app.config['MAIL_PASSWORD'] = 'your-password'
 app.config['MAIL_DEFAULT_SENDER'] = ('YourName', 'noreply@your-domain.co.zw')
 
-mail = Mail(app)
 
 app.app_context()
 db = SQLAlchemy(app)
 migrate = Migrate(app, db, render_as_batch = True)
 
-from {app_name}.api import endpoints
+from {app_name}.api import home, health, protected
 """
         self._write_file(app_path / app_name / "__init__.py", app_content)
         self._write_file(app_path / "app.py", f"from {app_name} import app\n\nif __name__ == '__main__':\n    app.run()")
@@ -153,54 +160,148 @@ if __name__ == "__main__":
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{app_name}</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
+        :root {{
+            --bg: #f8fafc;
+            --ink: #0f172a;
+            --muted: #475569;
+            --line: #e2e8f0;
+            --card: #ffffff;
+            --brand: #ef4444;
+            --brand-ink: #991b1b;
+        }}
         body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f8;
+            margin: 0;
+            font-family: "Instrument Sans", "Segoe UI", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 20% 20%, #fee2e2 0%, transparent 45%),
+                radial-gradient(circle at 80% 0%, #dbeafe 0%, transparent 35%),
+                var(--bg);
+            min-height: 100vh;
         }}
         .container {{
-            max-width: 800px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 2.5rem 1.25rem 3rem;
         }}
-        .header {{
-            text-align: center;
-            margin-bottom: 2rem;
+        .topbar {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            font-size: 0.95rem;
         }}
-        .header h1 {{
-            font-size: 2.5rem;
-            color: #3490dc;
-            margin-bottom: 0.5rem;
+        .badge {{
+            border: 1px solid var(--line);
+            background: #fff;
+            border-radius: 999px;
+            padding: 0.35rem 0.8rem;
         }}
-        .content {{
-            background-color: #fff;
-            padding: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        .hero {{
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 3rem 2rem;
+            box-shadow: 0 25px 50px -30px rgba(15, 23, 42, 0.35);
+            animation: rise 600ms ease-out;
+        }}
+        .hero h1 {{
+            font-size: clamp(2rem, 5vw, 3.4rem);
+            margin: 0;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+        }}
+        .hero p {{
+            color: var(--muted);
+            margin: 1.1rem 0 0;
+            font-size: 1.08rem;
+            max-width: 44rem;
+        }}
+        .cta {{
+            margin-top: 1.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--brand);
+            color: #fff;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            text-decoration: none;
+            font-weight: 600;
+        }}
+        .cards {{
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+        }}
+        .card {{
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 1rem;
+        }}
+        .card h3 {{
+            margin: 0 0 0.5rem;
+            color: var(--brand-ink);
+        }}
+        .card p {{
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.95rem;
         }}
         .footer {{
-            text-align: center;
             margin-top: 2rem;
-            color: #718096;
+            color: var(--muted);
+            text-align: center;
         }}
-        .footer a {{
-            color: #3490dc;
-            text-decoration: none;
+        @keyframes rise {{
+            from {{ opacity: 0; transform: translateY(14px); }}
+            to {{ opacity: 1; transform: translateY(0); }}
+        }}
+        @media (max-width: 800px) {{
+            .topbar {{
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: flex-start;
+            }}
+            .cards {{
+                grid-template-columns: 1fr;
+            }}
+            .hero {{
+                padding: 2.2rem 1.2rem;
+            }}
         }}
     </style>
 </head>
-<body class="bg-gray-100">
+<body>
     <div class="container">
-        <header class="header">
-            <h1 class="text-3xl font-semibold">{app_name}</h1>
-            <p class="text-gray-600">Generated with <a href="https://github.com/taqsblaze/amen-cli" class="text-blue-500 hover:underline">Amen CLI</a></p>
-        </header>
-        <div class="content">
-            <p class="text-gray-700">Your application is running successfully.</p>
+        <div class="topbar">
+            <span class="badge">{app_name}</span>
+            <span class="badge">Amen CLI v{version}</span>
         </div>
+        <section class="hero">
+            <h1>Ship ideas faster with {app_name}.</h1>
+            <p>Your new application is running. Start by creating endpoints, utilities, and views with structured commands and keep your project organized from day one.</p>
+            <a class="cta" href="https://github.com/taqsblaze/amen-cli">Explore Amen CLI</a>
+            <div class="cards">
+                <article class="card">
+                    <h3>Build</h3>
+                    <p>Scaffold routes and utility modules without boilerplate.</p>
+                </article>
+                <article class="card">
+                    <h3>Grow</h3>
+                    <p>Add new features with the same command style as your initial setup.</p>
+                </article>
+                <article class="card">
+                    <h3>Deploy</h3>
+                    <p>Start clean, iterate quickly, and move from local to production smoothly.</p>
+                </article>
+            </div>
+        </section>
         <footer class="footer">
-            <p>&copy; {app_name} - <a href="https://github.com/taqsblaze/amen-cli">Amen CLI v{version}</a></p>
+            <p>&copy; {app_name} powered by Amen CLI.</p>
         </footer>
     </div>
     <script src="/static/js/app.js"></script>
@@ -758,74 +859,86 @@ def token_required(request: Request):
         self._write_file(app_path / app_name / "auth" / "token.py", token_content)
 
     def _generate_endpoints_file(self, app_path: Path, app_name: str, framework: str, app_type: str):
-        """Generate endpoints.py file"""
+        """Generate separated endpoint modules"""
         if framework == 'flask':
-            endpoints_content = f"""from flask import jsonify, render_template, request
-from {app_name}.auth.token import token_required
+            index_content = f"""from flask import jsonify, render_template
 from {app_name} import app
 
 @app.route('/')
 def index():
     {"return render_template('index.html', title='" + app_name + "')" if app_type == 'webapp' else "return jsonify({'message': 'Welcome to " + app_name + " API!'})"}
+"""
+            health_content = f"""from flask import jsonify
+from {app_name} import app
 
 @app.route('/health')
 def health():
     return jsonify({{'status': 'healthy', 'service': '{app_name}'}})
+"""
+            protected_content = f"""from flask import jsonify
+from {app_name}.auth.token import token_required
+from {app_name} import app
 
 @app.route('/protected')
 @token_required
 def protected(current_user):
     return jsonify({{'message': 'This is a protected route!', 'user': current_user}})
 """
+            api_init_content = """from . import home, health, protected
+"""
+            self._write_file(app_path / app_name / "api" / "__init__.py", api_init_content)
+            self._write_file(app_path / app_name / "api" / "home.py", index_content)
+            self._write_file(app_path / app_name / "api" / "health.py", health_content)
+            self._write_file(app_path / app_name / "api" / "protected.py", protected_content)
         elif framework == 'fastapi':
             if app_type == 'webapp':
-                endpoints_content = f"""from fastapi import APIRouter, Request
+                root_content = f"""from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
-from {app_name}.auth.token import token_required
-from fastapi import Depends, HTTPException, status
+router = APIRouter()
 
-
-api_router = APIRouter()
-
-
-@api_router.get("/")
+@router.get("/")
 async def root(request: Request):
     templates = Jinja2Templates(directory='{app_name}/templates')
     return templates.TemplateResponse('index.html', {{'request': request, 'title': '{app_name}'}})
-
-
-@api_router.get("/health")
-async def health():
-    return {{"status": "healthy", "service": "{app_name}"}}
-
-
-@api_router.get("/protected")
-async def protected(current_user: dict = Depends(token_required)):
-    return {{"message": "This is a protected route!", "user": current_user}}
 """
             else:
-                endpoints_content = f"""from fastapi import APIRouter
-from {app_name}.auth.token import token_required
-from fastapi import Depends, HTTPException, status
+                root_content = f"""from fastapi import APIRouter
+router = APIRouter()
 
-api_router = APIRouter()
-
-
-@api_router.get("/")
+@router.get("/")
 async def root():
     return {{"message": "Welcome to {app_name} API!"}}
+"""
+            health_content = f"""from fastapi import APIRouter
+router = APIRouter()
 
-
-@api_router.get("/health")
+@router.get("/health")
 async def health():
     return {{"status": "healthy", "service": "{app_name}"}}
+"""
+            protected_content = f"""from fastapi import APIRouter, Depends
+from {app_name}.auth.token import token_required
+router = APIRouter()
 
-
-@api_router.get("/protected")
+@router.get("/protected")
 async def protected(current_user: dict = Depends(token_required)):
     return {{"message": "This is a protected route!", "user": current_user}}
 """
-        self._write_file(app_path / app_name / "api" / "endpoints.py", endpoints_content)
+            endpoints_content = """from fastapi import APIRouter
+from .root import router as root_router
+from .health import router as health_router
+from .protected import router as protected_router
+
+api_router = APIRouter()
+api_router.include_router(root_router)
+api_router.include_router(health_router)
+api_router.include_router(protected_router)
+"""
+            self._write_file(app_path / app_name / "api" / "__init__.py", "")
+            self._write_file(app_path / app_name / "api" / "root.py", root_content)
+            self._write_file(app_path / app_name / "api" / "health.py", health_content)
+            self._write_file(app_path / app_name / "api" / "protected.py", protected_content)
+            self._write_file(app_path / app_name / "api" / "endpoints.py", endpoints_content)
 
     def _generate_database_files(self, app_path: Path, app_name: str, database: str):
         """Generate database configuration files"""

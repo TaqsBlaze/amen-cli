@@ -297,7 +297,7 @@ amen monitor myapp --port 5000 -refresh 0.5 --web #Web based monitor
       <pre class="bg-gray-900 text-blue-200 rounded p-4 overflow-x-auto transition-shadow duration-300 hover:shadow-lg"><code>your-app/
 ├── venv/                   # Virtual environment
 ├── your-app/               # Main application package
-│   ├── api/                # API endpoints (endpoints.py)
+│   ├── api/                # API endpoint modules
 │   ├── auth/               # Authentication (token.py, etc.)
 │   ├── models/             # Models module
 │   ├── static/             # Static files (CSS, JS, images)
@@ -312,15 +312,15 @@ amen monitor myapp --port 5000 -refresh 0.5 --web #Web based monitor
 ├── .env                    # Environment variables (local)
 ├── .env.example            # Environment variables template
 ├── .gitignore              # Git ignore rules
-├── run.py                  # Application runner
+├── app.py                  # Application runner
 └── README.md               # Project documentation
 </code></pre>
       <p class="text-lg">
-        - <b>Flask</b>: Uses <code>app.py</code> and registers a blueprint from <code>api/endpoints.py</code>. Token
+        - <b>Flask</b>: Uses <code>app.py</code> and registers routes from separate files in <code>api/</code>. Token
         authentication is in <code>auth/token.py</code>.
       </p>
       <p class="text-lg">
-        - <b>FastAPI</b>: Uses <code>main.py</code> and includes a router from <code>api/endpoints.py</code>. Token
+        - <b>FastAPI</b>: Uses <code>main.py</code> and includes routers from separate files in <code>api/</code> through <code>api/endpoints.py</code>. Token
         authentication is in <code>auth/token.py</code>.
       </p>
       <p class="text-lg">
