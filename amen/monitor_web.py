@@ -4,7 +4,6 @@ import time
 import psutil
 from pathlib import Path
 from datetime import datetime
-import threading
 
 from flask import Flask, render_template, jsonify, url_for
 
@@ -29,16 +28,16 @@ def get_process_info(port):
             pass
     return None
 
+
 def run_monitor_web(app_name, port, refresh):
     """Run a web interface to monitor application status."""
     app = Flask(__name__)
     app_path = Path.cwd() / app_name
 
     if not app_path.exists():
-        console.print(f"❌ Application '{app_name}' not found.", style="red")
-        return
+        raise FileNotFoundError(f"Application '{app_name}' not found.")
 
-    @app.route('/')
+    @app.route("/")
     def index():
         return render_template('monitor.html', app_name=app_name)
 
@@ -72,19 +71,11 @@ def run_monitor_web(app_name, port, refresh):
             }
         return jsonify(process_data)
 
-    def run_app():
-        app.run(debug=True, use_reloader=False, port=5001)
-
-    web_thread = threading.Thread(target=run_app)
-    web_thread.daemon = True
-    web_thread.start()
-
     console.print(f"🔍 Monitoring {app_name}...", style="blue")
     console.print(f"📊 Web interface available at http://localhost:5001", style="green")
     console.print(f"Press Ctrl+C to stop monitoring", style="yellow")
 
     try:
-        while True:
-            time.sleep(refresh)
+        app.run(debug=True, use_reloader=False, port=5001)
     except KeyboardInterrupt:
         console.print("\n✋ Monitoring stopped", style="yellow")

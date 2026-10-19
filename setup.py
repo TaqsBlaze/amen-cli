@@ -6,7 +6,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="amen-cli",
-    version="0.13.1",
+    version="0.14.0",
     author="Tanaka Chinengundu",
     author_email="tanakah30@gmail.com",
     description="composer-inspired Python web framework scaffolding tool",
@@ -59,6 +59,14 @@ setup(
             "black>=21.0.0",
             "flake8>=3.9.0",
             "mypy>=0.900",
+            "fastapi>=0.108.0",
+            "httpx>=0.27.0",
+            "pyjwt",
+            "pymysql",
+            "sqlalchemy>=2.0.0",
+            "alembic>=1.16.0",
+            "flask-sqlalchemy>=3.1.0",
+            "flask-migrate>=4.0.0",
         ],
     },
     project_urls={
