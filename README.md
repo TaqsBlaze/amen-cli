@@ -35,7 +35,7 @@ A laravel installer inspired Python Web Application Scaffolding Tool that helps 
 
 ### Webapp welcome page — 0.14.0
 
-New Flask and FastAPI webapps open with a Laravel-inspired welcome page featuring
+New Flask and FastAPI webapps open with a welcome page featuring
 a prominent AMEN version badge, project details, and a searchable reference of
 AMEN commands with descriptions and copy buttons. Theme preferences persist,
 and the health control checks the real `/health` endpoint. Fonts, styles,
